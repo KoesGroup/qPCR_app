@@ -151,9 +151,9 @@ normalize3ref <- function(total,ref1,ref2,ref3){
 
 
 AverageTRs <- function(norm, sample="None"){
-  ##returns a list of averages and stdevs of technical replicates. ea the same sample/target combinations.
+  ## Returns a list of averages and stdevs of technical replicates. ea the same sample/target combinations.
+  ## if requested normalized to a sample 
   if(sample=="None"){
-    print("single")
     Averages <- norm %>%
       group_by(Sample, Target) %>%
       mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
@@ -161,7 +161,6 @@ AverageTRs <- function(norm, sample="None"){
       select(Sample, Target, CTnorm, CTstd) %>%
       distinct()
   } else {
-    print("double")
     refSample <- norm %>%
       filter(Sample == sample) %>%
       group_by(Sample, Target) %>%
