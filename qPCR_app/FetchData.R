@@ -54,7 +54,7 @@ TargetValues <- function(total){
   return(quartiles)
 }
 
-normalize <- function(total,ref){
+normalize1ref <- function(total,ref){
   ## normalizes CT values to expression values to a user chosen reference gen.
   refList <- total %>%
     select(Sample,Target,CT) %>%
@@ -76,4 +76,76 @@ normalize <- function(total,ref){
 }
 
 
+normalize2ref <- function(total,ref1,ref2){
+refList1 <- total %>%
+  select(Sample,Target,CT) %>%
+  group_by(Sample,Target) %>%
+  mutate("CTmean1" = mean(CT)) %>%
+  ungroup() %>%
+  filter(Target == ref1) %>%
+  select(Sample,CTmean1) %>%
+  distinct()
+refList2 <- total %>%
+  select(Sample,Target,CT) %>%
+  group_by(Sample,Target) %>%
+  mutate("CTmean2" = mean(CT)) %>%
+  ungroup() %>%
+  filter(Target == ref2) %>%
+  select(Sample,CTmean2) %>%
+  distinct()
+refList <- merge(refList1,refList2) %>%
+  group_by(Sample) %>%
+  mutate(geoMean = exp(mean(log(c(CTmean1,CTmean2))))) %>%
+  ungroup() %>%
+  select(Sample, geoMean)
+norm <- merge(total, refList) %>%
+  mutate("CTdif" = 2^(geoMean - CT)) %>%
+#  group_by(Sample,Target) %>%
+#  mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
+#  ungroup() %>%
+  select(Sample,Target,CTdif) %>%
+  distinct()
+}
+
+
+normalize3ref <- function(total,ref1,ref2,ref3){
+  refList1 <- total %>%
+    select(Sample,Target,CT) %>%
+    group_by(Sample,Target) %>%
+    mutate("CTmean1" = mean(CT)) %>%
+    ungroup() %>%
+    filter(Target == ref1) %>%
+    select(Sample,CTmean1) %>%
+    distinct()
+  refList2 <- total %>%
+    select(Sample,Target,CT) %>%
+    group_by(Sample,Target) %>%
+    mutate("CTmean2" = mean(CT)) %>%
+    ungroup() %>%
+    filter(Target == ref2) %>%
+    select(Sample,CTmean2) %>%
+    distinct()
+  refList3 <- total %>%
+    select(Sample,Target,CT) %>%
+    group_by(Sample,Target) %>%
+    mutate("CTmean3" = mean(CT)) %>%
+    ungroup() %>%
+    filter(Target == ref3) %>%
+    select(Sample,CTmean3) %>%
+    distinct()
+  refList <- refList1 %>%
+    merge(refList2) %>%
+    merge(refList3) %>%
+    group_by(Sample) %>%
+    mutate(geoMean = exp(mean(log(c(CTmean1,CTmean2,CTmean3))))) %>%
+    ungroup() %>%
+    select(Sample, geoMean)
+  norm <- merge(total, refList) %>%
+    mutate("CTdif" = 2^(geoMean - CT)) %>%
+    #  group_by(Sample,Target) %>%
+    #  mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
+    #  ungroup() %>%
+    select(Sample,Target,CTdif) %>%
+    distinct()
+}
 ## geometric average: exp(mean(log(x)))   
