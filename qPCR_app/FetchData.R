@@ -181,5 +181,16 @@ AverageTRs <- function(norm, sample="None"){
 }   
     
 
+Average2groups <- function(sampleFile, averages){
+  sampleData <- read_excel(sampleFile, col_names = TRUE, col_types = NULL, na = "")
+  groupAverages <- Final %>%
+    merge(sampleData) %>%
+    group_by(Group, Target) %>%
+    mutate(CTgroupMean = mean(CTnorm), CTgroupStdev = sd(CTnorm)) %>%
+    ungroup() %>%
+    select(Group, Target, CTgroupMean, CTgroupStdev) %>%
+    distinct()
+  return(groupAverages)
+  }
 
 ## geometric average: exp(mean(log(x)))   
