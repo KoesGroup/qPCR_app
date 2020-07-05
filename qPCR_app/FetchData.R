@@ -148,4 +148,39 @@ normalize3ref <- function(total,ref1,ref2,ref3){
     select(Sample,Target,CTdif) %>%
     distinct()
 }
+
+
+AverageTRs <- function(norm, sample="None"){
+  ##returns a list of averages and stdevs of technical replicates. ea the same sample/target combinations.
+  if(sample=="None"){
+    print("single")
+    Averages <- norm %>%
+      group_by(Sample, Target) %>%
+      mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
+      ungroup() %>%
+      select(Sample, Target, CTnorm, CTstd) %>%
+      distinct()
+  } else {
+    print("double")
+    refSample <- norm %>%
+      filter(Sample == sample) %>%
+      group_by(Sample, Target) %>%
+      mutate(CTref = mean(CTdif)) %>%
+      ungroup() %>%
+      select(Target, CTref) %>%
+      distinct()
+    Averages <- normalized3 %>%
+      merge(refSample) %>%
+      mutate(CTDD=CTdif/CTref) %>%
+      group_by(Sample,Target) %>%
+      mutate(CTnorm = mean(CTDD), CTstd = sd(CTDD)) %>%
+      ungroup() %>%
+      select(Sample, Target, CTnorm, CTstd) %>%
+      distinct()  
+  }
+  return(Averages)
+}   
+    
+
+
 ## geometric average: exp(mean(log(x)))   
