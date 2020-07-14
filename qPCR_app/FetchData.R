@@ -4,9 +4,9 @@ library(readxl)
 
 fetchRaw <- function(dataDir){
   ## reads files from a given directory and merges all the data to a single dataframe.
-  rawdata <- list.files(dataDir)
-  total <- data.frame()
-  for(f in rawdata){
+  #rawdata <- list.files(dataDir)
+  #total <- data.frame()
+  for(f in dataDir){
     path2file = paste0(dataDir,f)
     PCRdata <- read_excel(path2file, sheet = "Results", col_names = TRUE, col_types = NULL, na = "", skip =43 )
     PCRsubset <- PCRdata %>%
@@ -30,13 +30,15 @@ GetOutlayers <- function(total, maxDif){
   ## calculates difference between highest and lowest value between
   ## technical replicates, returns a list of the ones exceeding a 
   ## user given value. 
+  maxDif <- as.double(maxDif)
   outLayers <- total %>%
     group_by(Sample,Target) %>%
     mutate("CTmean" = mean(CT), "CTdif"= max(CT)-min(CT)) %>%
     filter(CTdif > maxDif) %>%
     ungroup() %>%
     arrange(CTmean) %>%
-    select(File,Sample,Target,CT, CTdif)
+    select(Sample,Target,CT, CTdif)
+  print(outLayers)
   return(outLayers)
 }
 
@@ -67,11 +69,7 @@ normalize1ref <- function(total,ref){
   WithRef <- merge(total, refList)
   norm <- WithRef %>%
     mutate("CTdif" = 2^(CTmean - CT)) %>%
-    group_by(Sample,Target) %>%
-    mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
-    ungroup() %>%
-    select(Sample,Target,CTnorm,CTstd) %>%
-    distinct()
+    select(Sample,Target,CTdif)
   return(norm)
 }
 
@@ -100,11 +98,7 @@ refList <- merge(refList1,refList2) %>%
   select(Sample, geoMean)
 norm <- merge(total, refList) %>%
   mutate("CTdif" = 2^(geoMean - CT)) %>%
-#  group_by(Sample,Target) %>%
-#  mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
-#  ungroup() %>%
-  select(Sample,Target,CTdif) %>%
-  distinct()
+  select(Sample,Target,CTdif)
 }
 
 
@@ -142,11 +136,7 @@ normalize3ref <- function(total,ref1,ref2,ref3){
     select(Sample, geoMean)
   norm <- merge(total, refList) %>%
     mutate("CTdif" = 2^(geoMean - CT)) %>%
-    #  group_by(Sample,Target) %>%
-    #  mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
-    #  ungroup() %>%
-    select(Sample,Target,CTdif) %>%
-    distinct()
+    select(Sample,Target,CTdif)
 }
 
 
@@ -168,7 +158,7 @@ AverageTRs <- function(norm, sample="None"){
       ungroup() %>%
       select(Target, CTref) %>%
       distinct()
-    Averages <- normalized3 %>%
+    Averages <- norm %>%
       merge(refSample) %>%
       mutate(CTDD=CTdif/CTref) %>%
       group_by(Sample,Target) %>%
