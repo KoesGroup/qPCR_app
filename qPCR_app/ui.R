@@ -53,6 +53,9 @@ tabPanel("Normalization",
                        style="color: #fff; background-color: #F5A015; border-color: #F5A015; height:60px; width:130px"),
           actionButton("refGeneInfo", "info", 
                        style="color: #050505; background-color: #FCE0B3; border-color: #FCE0B3; height:60px; width:65px"),
+
+         actionButton("plotButton1", "Plot", 
+                      style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px"),
           
           htmlOutput("normtext"),
           br(),
@@ -63,7 +66,11 @@ tabPanel("Normalization",
           actionButton("normButton", "submit", 
                        style="color: #fff; background-color: #AB2DC4; border-color: #AB2DC4; height:60px; width:130px"),
           actionButton("refSampleInfo", "info", 
-                       style="color: #050505; background-color: #EFBEF9; border-color: #EFBEF9; height:60px; width:65px")
+                       style="color: #050505; background-color: #EFBEF9; border-color: #EFBEF9; height:60px; width:65px"),
+          
+          actionButton("plotButton2", "Plot", 
+                       style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
+          
           
           
           ),
@@ -73,7 +80,9 @@ tabPanel("Normalization",
             ),
             
             htmlOutput("refText"),
-            tableOutput("refTable")
+            tableOutput("refTable"),
+            plotOutput("rawPlot", height = 800)
+            
             
 )
 ))

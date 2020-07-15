@@ -52,8 +52,8 @@ server <- function(input, output) {
  
   event3 <- observeEvent(input$TargetButton, {
     output$intro1 <- renderText("Info box")
-    geneList <- TargetValues(rv$rawDf)
-    rv$genes <- geneList$Target
+    geneList <- TargetValues(rv$rawDf) #can be removed? already in event1
+    rv$genes <- geneList$Target #can be removed?
     output$contents <- renderTable({   
       geneList
     }, rownames = F)
@@ -105,8 +105,13 @@ server <- function(input, output) {
      rv$normDf
       
     }, rownames = T)
+    
+    
+    
     #output$targets <- renderText(paste0("Chosen reference genes: ", rv$refs))
   })
+  
+  
   
 
   output$checkbox2 <- renderUI({
@@ -139,9 +144,37 @@ server <- function(input, output) {
   
   event10 <- observeEvent(input$refSampleInfo, {
     output$intro2 <- renderText(refsampleInfo())
+    
   })
   
+  event11.1 <- 
+  
+  event11 <- observeEvent(input$plotButton1, {
+      
+      output$refTable <- NULL
+      
+      output$rawPlot <- renderPlot({
+          
+          df <- rv$normDf
+          ggplot(df, aes(x = Sample, y = CTdif))+
+              geom_col(aes(fill = Sample))
+      })
+
+  })
+  
+  event12 <- observeEvent(input$plotButton2, {
+      output$refTable <- NULL
+      output$rawPlot <- renderPlot({
+          
+          df <- rv$data2plot
+          ggplot(df, aes(x = Sample, y = CTnorm))+
+              geom_col(aes(fill = Sample))
+      })
+  })
+  
+  
   ## rv$data2plot contains the data to be plotted.
+  
   
 }
 
