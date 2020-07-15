@@ -37,6 +37,9 @@ server <- function(input, output) {
   output$contents <- renderTable({   
     rv$rawDf
       }, rownames = T)
+  
+  geneList <- TargetValues(rv$rawDf)
+  rv$genes <- geneList$Target
   })
   
   event2 <- observeEvent(input$outButton, {
@@ -56,6 +59,7 @@ server <- function(input, output) {
     }, rownames = F)
   })
   
+ 
   output$border1 <- renderText("<hr style=\"height:3px;border-width:0;color:#9E9E9C;background-color:#9E9E9C\">")
   
   output$border2 <- renderText("<hr style=\"height:3px;border-width:0;color:#9E9E9C;background-color:#9E9E9C\"><strong>List of the used targets.</strong>")
@@ -81,7 +85,7 @@ server <- function(input, output) {
   event7 <- observeEvent(input$RefButton, {
     if(length(input$checkbox)==1){
       rv$normDf <- normalize1ref(rv$rawDf,input$checkbox[1])
-      normText <- paste0("<h4><font color=\"#18B22D\"><br>normalization is a done with ",input$checkbox[1], " as reference gene.</font></h4>")
+      normText <- paste0("<h4><font color=\"#18B22D\"><br>normalization is done with ",input$checkbox[1], " as reference gene.</font></h4>")
     } else if(length(input$checkbox)==2) {
       rv$normDf <- normalize2ref(rv$rawDf,input$checkbox[1],input$checkbox[2])
       normText <- paste0("<h4><font color=\"#18B22D\"><br>normalization is done with ",input$checkbox[1], " and ",input$checkbox[2], " as reference genes.</font></h4>")
@@ -91,6 +95,7 @@ server <- function(input, output) {
     } else {
       rv$normDf <- NULL
       normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is too high for this app.</center></font></h3>")
+      
       
 
     }
