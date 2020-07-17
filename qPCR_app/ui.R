@@ -55,8 +55,12 @@ ui <- fluidPage(
                             actionButton("refGeneInfo", "info", 
                                          style="color: #050505; background-color: #FCE0B3; border-color: #FCE0B3; height:60px; width:65px"),
                             br(),
-                            actionButton("plotButton1", "Plot", 
-                                         style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px"),
+                            
+                            conditionalPanel( condition = "input.RefButton !==0",
+                                              actionButton("plotButton1", "Plot", 
+                                                          style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
+                            ),
+                          
                             
                             htmlOutput("normtext"),
                             br(),
@@ -69,8 +73,11 @@ ui <- fluidPage(
                             actionButton("refSampleInfo", "info", 
                                          style="color: #050505; background-color: #EFBEF9; border-color: #EFBEF9; height:60px; width:65px"),
                             br(),
-                            actionButton("plotButton2", "Plot", 
-                                         style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
+                            
+                            conditionalPanel( condition = "input.normButton !==0",
+                                              actionButton("plotButton2", "Plot", 
+                                                           style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
+                            )
                             
                             
                             
