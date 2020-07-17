@@ -221,9 +221,4 @@ server <- function(input, output) {
         theme(plot.title = element_text(size = 16))
     })
   })
-  
-  
-  ## rv$data2plot contains the data to be plotted.
-  
-  
 }
