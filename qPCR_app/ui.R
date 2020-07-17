@@ -55,6 +55,8 @@ ui <- fluidPage(
                             actionButton("refGeneInfo", "info", 
                                          style="color: #050505; background-color: #FCE0B3; border-color: #FCE0B3; height:60px; width:65px"),
                             br(),
+                            actionButton("download_ref_df", "Download dCt Table"),
+                           
                             
                             conditionalPanel( condition = "input.RefButton !==0",
                                               htmlOutput("normtext"),
@@ -73,7 +75,11 @@ ui <- fluidPage(
                                                                 br(),
                                                                 actionButton("plotButton2", "Plot", 
                                                                              style="color: #050505; background-color: #fbe6ff; border-color: #fbe6ff; height:60px; width:130px")
-                                              ))
+                                              ),
+                                              br(),
+                                              actionButton("download_norm_df", "Download Normalized Data Table")
+                                              )
+                            
                         
                             
                             
