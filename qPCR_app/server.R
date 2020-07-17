@@ -108,7 +108,7 @@ server <- function(input, output) {
     choice <- rv$genes
     rv$refs <- checkboxGroupInput("checkbox","Select referencegene(s) 3 max.", choices = choice, selected = choice[1])
   })
-  
+##  
   event7 <- observeEvent(input$RefButton, {
     output$intro2 <- renderText("Info box")
     runjs(sprintf("
@@ -136,6 +136,10 @@ server <- function(input, output) {
       rv$normDf
       
     }, rownames = T)
+    
+    output$rawPlot <- NULL #remove the existing plot from UI if the table is printed again after the data is plotted
+    
+
     
     
     
@@ -178,7 +182,11 @@ server <- function(input, output) {
       rv$data2plot
     }, rownames = F)
     
+    output$rawPlot <- NULL #remove the existing plot from UI if the table is printed again after the data is plotted
+    
   })
+  
+##
   event9 <- observeEvent(input$refGeneInfo, {
     output$intro2 <- renderText(refgeneInfo())
     runjs(sprintf("
@@ -193,8 +201,7 @@ server <- function(input, output) {
                   ", "wellPanelId2", "#EFBEF9"))
   })
   
-  event11.1 <- 
-    
+ ##   
     event11 <- observeEvent(input$plotButton1, {
       
       output$refTable <- NULL
@@ -204,10 +211,12 @@ server <- function(input, output) {
         df <- rv$normDf
         ggplot(df, aes(x = Sample, y = CTdif))+
           geom_col(aes(fill = Sample))
+        
       })
       
     })
-  
+    
+ ## 
   event12 <- observeEvent(input$plotButton2, {
     output$refTable <- NULL
     output$rawPlot <- renderPlot({
