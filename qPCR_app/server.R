@@ -209,8 +209,9 @@ server <- function(input, output) {
       output$rawPlot <- renderPlot({
         
         df <- rv$normDf
-        ggplot(df, aes(x = Sample, y = CTdif))+
-          geom_col(aes(fill = Sample))
+        ggplot(df, aes(x = Sample, y = dCt))+
+          geom_col(aes(fill = Sample))+
+          facet_grid(Target~.)
         
       })
       
@@ -222,8 +223,9 @@ server <- function(input, output) {
     output$rawPlot <- renderPlot({
       
       df <- rv$data2plot
-      ggplot(df, aes(x = Sample, y = CTnorm))+
-        geom_col(aes(fill = Sample))
+      ggplot(df, aes(x = Sample, y = ddCt))+
+        geom_col(aes(fill = Sample))+
+        facet_grid(Target~.)
     })
   })
   
