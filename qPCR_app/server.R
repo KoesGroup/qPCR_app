@@ -125,7 +125,7 @@ server <- function(input, output) {
       normText <- paste0("<h4><font color=\"#18B22D\"><br>normalization is done with ",input$checkbox[1], " , ",input$checkbox[2], " and ",input$checkbox[3], " as reference genes.</font></h4>")
     } else {
       rv$normDf <- NULL
-      normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is too high for this app.</center></font></h3>")
+      normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is inadequate for this app.</center></font></h3>")
       
       
       

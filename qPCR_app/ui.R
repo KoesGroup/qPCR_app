@@ -72,7 +72,7 @@ ui <- fluidPage(
                                               conditionalPanel( condition = "input.normButton !==0",
                                                                 br(),
                                                                 actionButton("plotButton2", "Plot", 
-                                                                             style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
+                                                                             style="color: #050505; background-color: #fbe6ff; border-color: #fbe6ff; height:60px; width:130px")
                                               ))
                         
                             
