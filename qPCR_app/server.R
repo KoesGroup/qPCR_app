@@ -206,12 +206,19 @@ server <- function(input, output) {
  ## 
   event12 <- observeEvent(input$plotButton2, {
     output$refTable <- NULL
+    output$refText <- NULL
+    
     output$rawPlot <- renderPlot({
       
       df <- rv$data2plot
+      
+      df <- df %>% filter(Target != input$checkbox )
+      
       ggplot(df, aes(x = Sample, y = ddCt))+
         geom_col(aes(fill = Sample))+
-        facet_grid(Target~.)
+        facet_grid(Target~.)+
+        ggtitle(paste0("Relative expression of the genes using ", input$checkbox, " as reference"))+
+        theme(plot.title = element_text(size = 16))
     })
   })
   
