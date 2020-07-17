@@ -201,21 +201,7 @@ server <- function(input, output) {
                   ", "wellPanelId2", "#EFBEF9"))
   })
   
- ##   
-    event11 <- observeEvent(input$plotButton1, {
-      
-      output$refTable <- NULL
-      
-      output$rawPlot <- renderPlot({
-        
-        df <- rv$normDf
-        ggplot(df, aes(x = Sample, y = dCt))+
-          geom_col(aes(fill = Sample))+
-          facet_grid(Target~.)
-        
-      })
-      
-    })
+
     
  ## 
   event12 <- observeEvent(input$plotButton2, {

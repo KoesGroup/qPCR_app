@@ -57,12 +57,6 @@ ui <- fluidPage(
                             br(),
                             
                             conditionalPanel( condition = "input.RefButton !==0",
-                                              br(),
-                                              actionButton("plotButton1", "Plot", 
-                                                          style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
-                            ),
-                          
-                            conditionalPanel( condition = "input.RefButton !==0",
                                               htmlOutput("normtext"),
                                               br(),
                                               checkboxInput("Norm2Sample", label = "Normalize to sample", value = FALSE),
