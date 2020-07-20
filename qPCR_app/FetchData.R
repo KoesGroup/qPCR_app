@@ -33,11 +33,11 @@ GetOutlayers <- function(total, maxDif){
   maxDif <- as.double(maxDif)
   outLayers <- total %>%
     group_by(Sample,Target) %>%
-    mutate("CTmean" = mean(CT), "CTdif"= max(CT)-min(CT)) %>%
-    filter(CTdif > maxDif) %>%
+    mutate("CTmean" = mean(CT), "dCt"= max(CT)-min(CT)) %>%
+    filter(dCt > maxDif) %>%
     ungroup() %>%
     arrange(CTmean) %>%
-    select(Sample,Target,CT, CTdif)
+    select(Sample,Target,CT, dCt)
   print(outLayers)
   return(outLayers)
 }
@@ -68,8 +68,8 @@ normalize1ref <- function(total,ref){
     distinct()
   WithRef <- merge(total, refList)
   norm <- WithRef %>%
-    mutate("CTdif" = 2^(CTmean - CT)) %>%
-    select(Sample,Target,CTdif)
+    mutate("dCt" = 2^(CTmean - CT)) %>%
+    select(Sample,Target,dCt)
   return(norm)
 }
 
@@ -97,8 +97,8 @@ refList <- merge(refList1,refList2) %>%
   ungroup() %>%
   select(Sample, geoMean)
 norm <- merge(total, refList) %>%
-  mutate("CTdif" = 2^(geoMean - CT)) %>%
-  select(Sample,Target,CTdif)
+  mutate("dCt" = 2^(geoMean - CT)) %>%
+  select(Sample,Target,dCt)
 }
 
 
@@ -135,8 +135,8 @@ normalize3ref <- function(total,ref1,ref2,ref3){
     ungroup() %>%
     select(Sample, geoMean)
   norm <- merge(total, refList) %>%
-    mutate("CTdif" = 2^(geoMean - CT)) %>%
-    select(Sample,Target,CTdif)
+    mutate("dCt" = 2^(geoMean - CT)) %>%
+    select(Sample,Target,dCt)
 }
 
 
@@ -146,25 +146,25 @@ AverageTRs <- function(norm, sample="None"){
   if(sample=="None"){
     Averages <- norm %>%
       group_by(Sample, Target) %>%
-      mutate(CTnorm = mean(CTdif), CTstd = sd(CTdif)) %>%
+      mutate(ddCt = mean(dCt), CTstd = sd(dCt)) %>%
       ungroup() %>%
-      select(Sample, Target, CTnorm, CTstd) %>%
+      select(Sample, Target, ddCt, CTstd) %>%
       distinct()
   } else {
     refSample <- norm %>%
       filter(Sample == sample) %>%
       group_by(Sample, Target) %>%
-      mutate(CTref = mean(CTdif)) %>%
+      mutate(CTref = mean(dCt)) %>%
       ungroup() %>%
       select(Target, CTref) %>%
       distinct()
     Averages <- norm %>%
       merge(refSample) %>%
-      mutate(CTDD=CTdif/CTref) %>%
+      mutate(CTDD=dCt/CTref) %>%
       group_by(Sample,Target) %>%
-      mutate(CTnorm = mean(CTDD), CTstd = sd(CTDD)) %>%
+      mutate(ddCt = mean(CTDD), CTstd = sd(CTDD)) %>%
       ungroup() %>%
-      select(Sample, Target, CTnorm, CTstd) %>%
+      select(Sample, Target, ddCt, CTstd) %>%
       distinct()  
   }
   return(Averages)
@@ -176,11 +176,37 @@ Average2groups <- function(sampleFile, averages){
   groupAverages <- Final %>%
     merge(sampleData) %>%
     group_by(Group, Target) %>%
-    mutate(CTgroupMean = mean(CTnorm), CTgroupStdev = sd(CTnorm)) %>%
+    mutate(CTgroupMean = mean(ddCt), CTgroupStdev = sd(ddCt)) %>%
     ungroup() %>%
     select(Group, Target, CTgroupMean, CTgroupStdev) %>%
     distinct()
   return(groupAverages)
   }
+
+
+getPlotData <- function(norm, subGenes, subSamples, subset="no"){
+  if(subset == 0){
+    df <- norm
+    print("subset is set to 0")
+  } else if(subset == 2){
+    df <- norm[norm$Sample %in% subSamples,]
+    print("subset is set to 1")
+    print(subSamples)
+    print(typeof(subSamples))
+  } else if(subset == 1){
+    df <- norm[norm$Target %in% subGenes,]
+    print("subset is set to 2")
+    print(subGenes)
+  } else if(subset == 3){
+    df1 <- norm[norm$Sample %in% subSamples,]
+    df <- df1[df1$Target %in% subGenes,]
+    print("subset is set to 3")
+  }
+  return(df)
+}
+
+
+
+
 
 ## geometric average: exp(mean(log(x)))   
