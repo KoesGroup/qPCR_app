@@ -3,6 +3,7 @@ library(shinyFiles)
 library(tidyverse)
 library(data.table)
 library(RColorBrewer)
+library(xlsx)
 
 source("FetchData.R")
 source("infoFile.R")
@@ -300,7 +301,7 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
   output$GreenBand2 <- renderText("<hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\">")
 
     # Change wellpanel color back to default
-  event14 <- observeEvent(input$plotButton2, {
+  event14 <- observeEvent(input$plotButton3, {
     output$intro3 <- renderText("Info Box.")
     runjs(sprintf("
         document.getElementById('%s').style.backgroundColor = '%s';
