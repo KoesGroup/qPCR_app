@@ -2,7 +2,7 @@ library(shiny)
 library(shinyFiles)
 library(tidyverse)
 library(data.table)
-library(xlsx)
+library(RColorBrewer)
 
 source("FetchData.R")
 source("infoFile.R")
@@ -10,21 +10,31 @@ source("infoFile.R")
 server <- function(input, output) {
   output$intro1 <- renderText("info box. Upon clicking on an info button, information will be displayed here.")
   rv <- reactiveValues(df = NULL, rawDf = NULL, targets = NULL, genes = NULL, refs = NULL, normDf = NULL,
-                       samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL)  
+                       samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL, sam2 = NULL)  
   
+  
+  # set default colors for the wellpanels.
   runjs(sprintf("
-            document.getElementById('%s').style.backgroundColor = '%s';
+        document.getElementById('%s').style.backgroundColor = '%s';
                 ", "wellPanelId1", "#ECF5FF"))
   
   runjs(sprintf("
         document.getElementById('%s').style.backgroundColor = '%s';
                 ", "wellPanelId2", "#FCFDE6"))
   
+  runjs(sprintf("
+        document.getElementById('%s').style.backgroundColor = '%s';
+                  ", "wellPanelId3", "#E2FFD4"))
+  
+  
   event1 <- observeEvent(input$goButton, {   #submit input counts.txt
     output$intro1 <- renderText("Info box")
     runjs(sprintf("
             document.getElementById('%s').style.backgroundColor = '%s';
                   ", "wellPanelId1", "#ECF5FF"))
+    
+    
+    # upload and read the raw data files   
     req(input$csvs)
     rv$df <- input$csvs$datapath
     total <- data.frame()
@@ -55,6 +65,7 @@ server <- function(input, output) {
     rv$genes <- geneList$Target
   })
   
+  ## show the list of samples with high technical variation 
   event2 <- observeEvent(input$outButton, {
     output$intro1 <- renderText("Info box")
     runjs(sprintf("
@@ -66,6 +77,7 @@ server <- function(input, output) {
     }, rownames = T)
   }) 
   
+  ## show list of targets
   event3 <- observeEvent(input$TargetButton, {
     output$intro1 <- renderText("Info box")
     runjs(sprintf("
@@ -83,7 +95,7 @@ server <- function(input, output) {
   
   output$border2 <- renderText("<hr style=\"height:3px;border-width:0;color:#9E9E9C;background-color:#9E9E9C\"><strong>List of the used targets.</strong>")
   
-  
+  ## Visualize the additional information on tab 1
   event4 <- observeEvent(input$uploadInfo, {
     output$intro1 <- renderText(uploadInfo())
     runjs(sprintf("
@@ -105,11 +117,13 @@ server <- function(input, output) {
                   ", "wellPanelId1", "#C6CEEC"))
   })
   
+  ## checkbox for chosing reference gene
   output$checkbox <- renderUI({
     choice <- rv$genes
     rv$refs <- checkboxGroupInput("checkbox","Select referencegene(s) 3 max.", choices = choice, selected = choice[1])
   })
-##  
+  
+  ##  get table of normalized values. Using one, two or three reference genes.
   event7 <- observeEvent(input$RefButton, {
     output$intro2 <- renderText("Info box")
     runjs(sprintf("
@@ -126,10 +140,8 @@ server <- function(input, output) {
       normText <- paste0("<h4><font color=\"#18B22D\"><br>normalization is done with ",input$checkbox[1], " , ",input$checkbox[2], " and ",input$checkbox[3], " as reference genes.</font></h4>")
     } else {
       rv$normDf <- NULL
-      normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is inadequate for this app.</center></font></h3>")
-      
-      
-      
+      normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is too high for this app.</center></font></h3>")
+
     }
     output$refText <- renderText(normText)
     
@@ -139,17 +151,12 @@ server <- function(input, output) {
     }, rownames = T)
     
     output$rawPlot <- NULL #remove the existing plot from UI if the table is printed again after the data is plotted
-    
 
-    
-    
-    
-    #output$targets <- renderText(paste0("Chosen reference genes: ", rv$refs))
   })
   
   
   
-  
+  # Show list of samples if requested, for chosing a reference sample.
   output$checkbox2 <- renderUI({
     if(input$Norm2Sample == TRUE){
       choice <- unique(rv$rawDf$Sample)
@@ -161,13 +168,11 @@ server <- function(input, output) {
       }
     } else {
       rv$sam <- NULL
-      # choice <- ""    #NULL
-      #  sampleText = NULL
     }
-    #rv$sam <- radioButtons("checkbox2",sampleText , choices = choice, selected = "")
   })
   output$normtext <- renderText("<hr hr style=\"height:3px;border-width:0;color:#FAEF07;background-color:#FAEF07\"><strong>Average technical replicates and optionaly normalize to reference sample.</strong>")
   
+  ## get technical averages and if requested normalize to reference sample
   event8 <- observeEvent(input$normButton, {
     output$intro2 <- renderText("Info box")
     runjs(sprintf("
@@ -187,7 +192,7 @@ server <- function(input, output) {
     
   })
   
-##
+  ## Show additional info on tab 2
   event9 <- observeEvent(input$refGeneInfo, {
     output$intro2 <- renderText(refgeneInfo())
     runjs(sprintf("
@@ -200,12 +205,26 @@ server <- function(input, output) {
     runjs(sprintf("
         document.getElementById('%s').style.backgroundColor = '%s';
                   ", "wellPanelId2", "#EFBEF9"))
-  })
+    })
   
-
+ ##   
+    event11 <- observeEvent(input$plotButton1, {
+      
+      output$refTable <- NULL
+    
+      output$rawPlot <- renderPlot({
+        
+        df <- rv$normDf
+        ggplot(df, aes(x = Sample, y = dCt))+
+          geom_col(aes(fill = Sample))+
+          facet_grid(Target~.)
+        
+      })
+      
+    })
     
  ## 
-  event12 <- observeEvent(input$plotButton2, {
+ event12 <- observeEvent(input$plotButton2, {
     output$refTable <- NULL
     output$refText <- NULL
     
@@ -234,17 +253,117 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
   df <- rv$data2plot
   write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
              col.names = TRUE, row.names = TRUE, append = FALSE)
-})  
+}) 
+  
+  output$plotText1 <- renderText("<strong>In the plot, would you like the Targets to be grouped or the Samples.</strong>")
+  output$plotText2 <- renderText("<strong><hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\"><br>Choose weather you want to plot the complete dataset or a subset.</strong>")
+
+  ## rv$data2plot contains the data to be plotted.
+  output$checkbox5 <- renderUI({
+    if(input$Coloroptions == F){
+      colorlist <- NULL 
+    } else {colorlist <- c("Set1","Set2","Set3","Pastel1", "Pastel2","Dark2","Accent","Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges",
+                           "OrRd","PuBu","PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd")
+    radioButtons("checkbox5","Select Color", choices = colorlist, selected = colorlist[1])}
+  })
+  
+  output$checkbox4 <- renderUI({ 
+    if (input$SubsetBox == 2 || input$SubsetBox == 3){
+      choice <- unique(rv$rawDf$Sample)
+      sampleText = "Choose sample(s)."
+      if(is.null(choice)){
+        rv$sam2 <- NULL
+      } else {
+        rv$sam2 <- checkboxGroupInput("checkbox3",sampleText , choices = choice, selected = choice[1])
+      }
+    } else {
+      rv$sam2 <- NULL
+    }
+  })  
+  
+  
+  output$checkbox3 <- renderUI({ 
+      if (input$SubsetBox == 1 || input$SubsetBox == 3){
+      choice2 <- rv$genes
+      sampleText2 = "Choose Target(s)."
+      if(is.null(choice2)){
+          rv$Tar2 <- NULL
+        } else {
+          rv$Tar2 <- checkboxGroupInput("checkbox4",sampleText2 , choices = choice2, selected = choice2[1])
+        }
+    } else {
+      rv$Tar2 <- NULL
+    }
+      })
+  
+  output$GreenBand <- renderText("<br><hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\"><br>")
+  output$GreenBand2 <- renderText("<hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\">")
+
+    # Change wellpanel color back to default
+  event14 <- observeEvent(input$plotButton2, {
+    output$intro3 <- renderText("Info Box.")
+    runjs(sprintf("
+        document.getElementById('%s').style.backgroundColor = '%s';
+                  ", "wellPanelId3", "#E2FFD4"))
+  
+    # r4un the data subset function from the functions file.
+    plotdf <- getPlotData(rv$data2plot, input$checkbox4, input$checkbox3, input$SubsetBox)
+    
+    # visualize the subsetted table
+    output$plotTable <- renderTable({   
+      plotdf
+    }, rownames = T) 
+    
+    
+    # choice of color pallet
+    if(input$Coloroptions == F){
+      colorChoice <- "Set1" 
+    } else { 
+      colorChoice <- input$checkbox5
+      }
+    
+    # build the plot either grouped by target or sample
+    if(input$TarSamBox == "Targets"){
+      colourCount = length(unique(plotdf$Sample))
+      getPalette = colorRampPalette(brewer.pal(8, colorChoice))
+      p <- ggplot(data=plotdf, aes(x=Target, y= ddCt, fill=Sample)) +
+        geom_bar(stat="identity", color="black", position=position_dodge()) +
+        scale_fill_manual(values = getPalette(colourCount)) +
+        geom_errorbar(aes(ymin=ddCt-CTstd, ymax=ddCt+CTstd), width=.2,
+                      position=position_dodge(.9)) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    } else {
+      colourCount = length(unique(plotdf$Target))
+      getPalette = colorRampPalette(brewer.pal(8, colorChoice))
+      p <- ggplot(data=plotdf, aes(x=Sample, y= ddCt, fill=Target)) +
+        geom_bar(stat="identity", color="black", position=position_dodge()) +
+        scale_fill_manual(values = getPalette(colourCount)) +
+        geom_errorbar(aes(ymin=ddCt-CTstd, ymax=ddCt+CTstd), width=.2,
+                      position=position_dodge(.9)) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    }
+    
+    #visualize the plot
+    output$basicPlot <- renderPlot({
+      p
+    })
+
+    })
+  
+  
+  
+  
+  
+  # Show plot info in the info box
+  event15 <- observeEvent(input$basicplotinfo, {
+    output$intro3 <- renderText(basicPlotInfo())
+    runjs(sprintf("
+                  document.getElementById('%s').style.backgroundColor = '%s';
+                  ", "wellPanelId3", "#F1D5D3"))
+  })
+  
   
   
   
 }
-
-
-
-
-
-
-
-
 

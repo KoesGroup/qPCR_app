@@ -20,7 +20,7 @@ ui <- fluidPage(
                  htmlOutput("border1"),
                  
                  sliderInput("OutTrash", "max difference between technical replicates.", min = 0.00, max = 5.00, value = 0.50, step = 0.01),
-                 actionButton("outButton", "outlayers", 
+                 actionButton("outButton", "outleyers", 
                               style="color: #fff; background-color: #2EAF2E; border-color: #2EAF2E; height:60px; width:130px"),
                  actionButton("outlayersInfo", "info", 
                               style="color: #050505; background-color: #C9EEC4; border-color: #C9EEC4; height:60px; width:65px"),
@@ -46,7 +46,7 @@ ui <- fluidPage(
                )
              )
     ),
-    tabPanel("Normalization",
+   tabPanel("Normalization",
              sidebarLayout(
                sidebarPanel(style = "background: #FCFDE6; border: #FCFDE6",
                             uiOutput("checkbox"),
@@ -80,10 +80,7 @@ ui <- fluidPage(
                                               actionButton("download_norm_df", "Download Normalized Data Table")
                                               )
                             
-                        
-                            
-                            
-                            
+                                                                                               
                ),
                mainPanel(useShinyjs(),
                  wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
@@ -96,5 +93,51 @@ ui <- fluidPage(
                  
                  
                )
-             ))
+             )),
+    tabPanel("Basic plot",
+             sidebarLayout(
+               sidebarPanel(style = "background: #E2FFD4; border: #E2FFD4",
+                            htmlOutput("plotText1"),
+                            radioButtons("TarSamBox","" , choices = c("Targets", "Samples"), selected = "Targets"),
+                            htmlOutput("GreenBand2"),
+                            checkboxInput("Coloroptions", label = "show more colors.", value = FALSE),
+                            uiOutput("checkbox5"),
+                            htmlOutput("plotText2"),
+                            radioButtons("SubsetBox","Subset data?" , choices = c("no"=0, "subset Targets"=1, "subset Samples"=2, "subset Both"=3), selected = 0),
+                            uiOutput("checkbox3"),
+                            uiOutput("checkbox4"),
+                            br(),
+                            
+                            conditionalPanel( condition = "input.normButton !==0",
+                                              htmlOutput("GreenBand"), 
+                                              actionButton("plotButton2", "Plot", 
+                                                           style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+                
+                                              actionButton("basicplotinfo", "info", 
+                                                           style="color: #050505; background-color: #F1D5D3; border-color: #F1D5D3; height:60px; width:65px")
+                            )
+                            
+
+             
+             
+             
+             
+             
+             
+             
+             
+             ),
+             mainPanel(useShinyjs(),
+                       wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
+                         htmlOutput("intro3"),id = "wellPanelId3"
+                       ),
+                       plotOutput("basicPlot", height = 800),
+                       
+                       tableOutput("plotTable")
+             
+             
+             
+             
+             
+             )))
   ))
