@@ -224,16 +224,37 @@ server <- function(input, output) {
     })
     
  ## 
-  event12 <- observeEvent(input$plotButton2, {
+ event12 <- observeEvent(input$plotButton2, {
     output$refTable <- NULL
+    output$refText <- NULL
+    
     output$rawPlot <- renderPlot({
       
       df <- rv$data2plot
+      
+      df <- df %>% filter(Target != input$checkbox )
+      
       ggplot(df, aes(x = Sample, y = ddCt))+
         geom_col(aes(fill = Sample))+
-        facet_grid(Target~.)
+        facet_grid(Target~.)+
+        ggtitle(paste0("Relative expression of the genes using ", input$checkbox, " as reference"))+
+        theme(plot.title = element_text(size = 16))
     })
   })
+  
+eventDownloadRefData <- observeEvent(input$download_ref_df,{
+    df <- rv$normDf
+    write.xlsx(df, "qPCR_dCt_data.xlsx", sheetName = "Sheet1", 
+               col.names = TRUE, row.names = FALSE, append = FALSE)
+  })  
+  
+  
+eventDownloadNormData <- observeEvent(input$download_norm_df,{
+  df <- rv$data2plot
+  write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
+             col.names = TRUE, row.names = TRUE, append = FALSE)
+}) 
+  
   output$plotText1 <- renderText("<strong>In the plot, would you like the Targets to be grouped or the Samples.</strong>")
   output$plotText2 <- renderText("<strong><hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\"><br>Choose weather you want to plot the complete dataset or a subset.</strong>")
 
@@ -345,3 +366,4 @@ server <- function(input, output) {
   
   
 }
+

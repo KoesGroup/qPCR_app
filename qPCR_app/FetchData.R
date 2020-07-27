@@ -209,4 +209,5 @@ getPlotData <- function(norm, subGenes, subSamples, subset="no"){
 
 
 
+
 ## geometric average: exp(mean(log(x)))   

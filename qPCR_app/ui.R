@@ -46,7 +46,7 @@ ui <- fluidPage(
                )
              )
     ),
-    tabPanel("Normalization",
+   tabPanel("Normalization",
              sidebarLayout(
                sidebarPanel(style = "background: #FCFDE6; border: #FCFDE6",
                             uiOutput("checkbox"),
@@ -55,26 +55,32 @@ ui <- fluidPage(
                             actionButton("refGeneInfo", "info", 
                                          style="color: #050505; background-color: #FCE0B3; border-color: #FCE0B3; height:60px; width:65px"),
                             br(),
+                            actionButton("download_ref_df", "Download dCt Table"),
+                           
                             
-                            #conditionalPanel( condition = "input.RefButton !==0",
-                            #                  actionButton("plotButton1", "Plot", 
-                            #                              style="color: #fff; background-color: #FCE0B3; border-color: #AB2DC4; height:60px; width:130px")
-                            #),
-                          
+                            conditionalPanel( condition = "input.RefButton !==0",
+                                              htmlOutput("normtext"),
+                                              br(),
+                                              checkboxInput("Norm2Sample", label = "Normalize to sample", value = FALSE),
+                                              
+                                              uiOutput("checkbox2"),
+                                              br(),
+                                              actionButton("normButton", "submit", 
+                                                           style="color: #fff; background-color: #AB2DC4; border-color: #AB2DC4; height:60px; width:130px"),
+                                              actionButton("refSampleInfo", "info", 
+                                                           style="color: #050505; background-color: #EFBEF9; border-color: #EFBEF9; height:60px; width:65px"),
+                                              br(),
+                                              
+                                              conditionalPanel( condition = "input.normButton !==0",
+                                                                br(),
+                                                                actionButton("plotButton2", "Plot", 
+                                                                             style="color: #050505; background-color: #fbe6ff; border-color: #fbe6ff; height:60px; width:130px")
+                                              ),
+                                              br(),
+                                              actionButton("download_norm_df", "Download Normalized Data Table")
+                                              )
                             
-                            htmlOutput("normtext"),
-                            br(),
-                            checkboxInput("Norm2Sample", label = "Normalize to sample", value = FALSE),
-                            
-                            uiOutput("checkbox2"),
-                            br(),
-                            actionButton("normButton", "submit", 
-                                         style="color: #fff; background-color: #AB2DC4; border-color: #AB2DC4; height:60px; width:130px"),
-                            actionButton("refSampleInfo", "info", 
-                                         style="color: #050505; background-color: #EFBEF9; border-color: #EFBEF9; height:60px; width:65px")
-                            
-                            
-                            
+                                                                                               
                ),
                mainPanel(useShinyjs(),
                  wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
@@ -134,5 +140,4 @@ ui <- fluidPage(
              
              
              )))
-    
   ))
