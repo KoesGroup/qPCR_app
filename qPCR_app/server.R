@@ -3,7 +3,7 @@ library(shinyFiles)
 library(tidyverse)
 library(data.table)
 library(RColorBrewer)
-library(xlsx)
+#library(xlsx)
 
 source("FetchData.R")
 source("infoFile.R")
@@ -192,6 +192,9 @@ server <- function(input, output) {
     output$rawPlot <- NULL #remove the existing plot from UI if the table is printed again after the data is plotted
     
   })
+  output$spaceje1 <- renderText("<div style=\"line-height:25%;\"><br></div>")
+  output$spaceje2 <- renderText("<div style=\"line-height:25%;\"><br></div>")
+  output$spaceje3 <- renderText("<div style=\"line-height:25%;\"><br></div>")
   
   ## Show additional info on tab 2
   event9 <- observeEvent(input$refGeneInfo, {
@@ -245,29 +248,35 @@ server <- function(input, output) {
   
 eventDownloadRefData <- observeEvent(input$download_ref_df,{
     df <- rv$normDf
-    write.xlsx(df, "qPCR_dCt_data.xlsx", sheetName = "Sheet1", 
-               col.names = TRUE, row.names = FALSE, append = FALSE)
+    #write.xlsx(df, "qPCR_dCt_data.xlsx", sheetName = "Sheet1", 
+    #           col.names = TRUE, row.names = FALSE, append = FALSE)
   })  
-  
+
   
 eventDownloadNormData <- observeEvent(input$download_norm_df,{
   df <- rv$data2plot
-  write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
-             col.names = TRUE, row.names = TRUE, append = FALSE)
+  #write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
+  #           col.names = TRUE, row.names = TRUE, append = FALSE)
 }) 
   
   output$plotText1 <- renderText("<strong>In the plot, would you like the Targets to be grouped or the Samples.</strong>")
   output$plotText2 <- renderText("<strong><hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\"><br>Choose weather you want to plot the complete dataset or a subset.</strong>")
 
-  ## rv$data2plot contains the data to be plotted.
+  ## set the choices for the colors of the plots.
   output$checkbox5 <- renderUI({
-    if(input$Coloroptions == F){
+    if(input$Coloroptions == 0){
       colorlist <- NULL 
-    } else {colorlist <- c("Set1","Set2","Set3","Pastel1", "Pastel2","Dark2","Accent","Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges",
-                           "OrRd","PuBu","PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd")
-    radioButtons("checkbox5","Select Color", choices = colorlist, selected = colorlist[1])}
+    } else if(input$Coloroptions == 1){colorlist <- c("Blues","Greens","Greys","Oranges","Purples","Reds")
+    radioButtons("checkbox5","single color choices", choices = colorlist, selected = colorlist[1])
+    } else if(input$Coloroptions == 2){colorlist <- c("blue & green"="BuGn","blue & purple"="BuPu","green & blue"="GnBu","orange & red"="OrRd","purple & blue"="PuBu","purple & red"="PuRd","red & purple"="RdPu")
+    radioButtons("checkbox5","two color choices", choices = colorlist, selected = colorlist[1])
+    } else if(input$Coloroptions == 3){colorlist <- c("purple, blue & green"="PuBuGn","yellow, green & blue"="YlGnBu","yellow, orange & brown"="YlOrBr","yellow, orange & red"="YlOrRd")
+    radioButtons("checkbox5","three color choices", choices = colorlist, selected = colorlist[1])
+    } else if(input$Coloroptions == 4){colorlist <- c("Set1","Set2","Set3","Pastel1", "Pastel2","Dark2","Accent")
+    radioButtons("checkbox5","multi color choices", choices = colorlist, selected = colorlist[1])}
   })
   
+  ## Show list of the used sample, to make selection
   output$checkbox4 <- renderUI({ 
     if (input$SubsetBox == 2 || input$SubsetBox == 3){
       choice <- unique(rv$rawDf$Sample)
@@ -282,7 +291,7 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
     }
   })  
   
-  
+  ## Show list of used targets, to make a selection
   output$checkbox3 <- renderUI({ 
       if (input$SubsetBox == 1 || input$SubsetBox == 3){
       choice2 <- rv$genes
@@ -297,7 +306,7 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
     }
       })
   
-  output$GreenBand <- renderText("<br><hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\"><br>")
+  output$GreenBand <- renderText("<hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\">")
   output$GreenBand2 <- renderText("<hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\">")
 
     # Change wellpanel color back to default
@@ -317,7 +326,7 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
     
     
     # choice of color pallet
-    if(input$Coloroptions == F){
+    if(input$Coloroptions == 0){
       colorChoice <- "Set1" 
     } else { 
       colorChoice <- input$checkbox5
