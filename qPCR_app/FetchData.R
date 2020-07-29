@@ -187,20 +187,14 @@ Average2groups <- function(sampleFile, averages){
 getPlotData <- function(norm, subGenes, subSamples, subset="no"){
   if(subset == 0){
     df <- norm
-    print("subset is set to 0")
   } else if(subset == 2){
     df <- norm[norm$Sample %in% subSamples,]
-    print("subset is set to 1")
-    print(subSamples)
-    print(typeof(subSamples))
   } else if(subset == 1){
     df <- norm[norm$Target %in% subGenes,]
-    print("subset is set to 2")
     print(subGenes)
   } else if(subset == 3){
     df1 <- norm[norm$Sample %in% subSamples,]
     df <- df1[df1$Target %in% subGenes,]
-    print("subset is set to 3")
   }
   return(df)
 }
