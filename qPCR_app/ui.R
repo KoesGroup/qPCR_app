@@ -51,14 +51,15 @@ ui <- fluidPage(
                sidebarPanel(style = "background: #FCFDE6; border: #FCFDE6",
                             uiOutput("checkbox"),
                             actionButton("RefButton", "submit", 
-                                         style="color: #fff; background-color: #F5A015; border-color: #F5A015; height:60px; width:130px"),
+                                         style="color: #050505; background-color: #e08c02; border-color: #e08c02; height:60px; width:130px"),
                             actionButton("refGeneInfo", "info", 
                                          style="color: #050505; background-color: #FCE0B3; border-color: #FCE0B3; height:60px; width:65px"),
                             br(),
-                            actionButton("download_ref_df", "Download dCt Table"),
-                           
+                            htmlOutput("spaceje1"),
                             
                             conditionalPanel( condition = "input.RefButton !==0",
+                                              actionButton("download_ref_df", "Download dCt Table",
+                                                           style="color: #050505; background-color: #f0b14a; border-color: #f0b14a; height:30px; width:199px"),
                                               htmlOutput("normtext"),
                                               br(),
                                               checkboxInput("Norm2Sample", label = "Normalize to sample", value = FALSE),
@@ -66,18 +67,22 @@ ui <- fluidPage(
                                               uiOutput("checkbox2"),
                                               br(),
                                               actionButton("normButton", "submit", 
-                                                           style="color: #fff; background-color: #AB2DC4; border-color: #AB2DC4; height:60px; width:130px"),
+                                                           style="color: #050505; background-color: #a204c2; border-color: #a204c2; height:60px; width:130px"),
                                               actionButton("refSampleInfo", "info", 
-                                                           style="color: #050505; background-color: #EFBEF9; border-color: #EFBEF9; height:60px; width:65px"),
+                                                           style="color: #050505; background-color: #e9b0f5; border-color: #e9b0f5; height:60px; width:65px"),
                                               br(),
                                               
                                               conditionalPanel( condition = "input.normButton !==0",
+                                                                htmlOutput("spaceje2"),
+                                                              
+                                                                actionButton("download_norm_df", "Download Normalized Data",
+                                                                             style="color: #050505; background-color: #c73de3; border-color: #c73de3;  height:30px; width:199px"),
                                                                 br(),
+                                                                htmlOutput("spaceje3"),
                                                                 actionButton("plotButton2", "Plot", 
-                                                                             style="color: #050505; background-color: #fbe6ff; border-color: #fbe6ff; height:60px; width:130px")
-                                              ),
-                                              br(),
-                                              actionButton("download_norm_df", "Download Normalized Data Table")
+                                                                             style="color: #050505; background-color:#da7eed; border-color: #da7eed;  height:30px; width:199px")
+                                              )
+
                                               )
                             
                                                                                                
@@ -100,30 +105,25 @@ ui <- fluidPage(
                             htmlOutput("plotText1"),
                             radioButtons("TarSamBox","" , choices = c("Targets", "Samples"), selected = "Targets"),
                             htmlOutput("GreenBand2"),
-                            checkboxInput("Coloroptions", label = "show more colors.", value = FALSE),
+                            #checkboxInput("Coloroptions", label = "show more colors.", value = FALSE),
+                            radioButtons("Coloroptions","Color of the plot" , choices = c("default"=0, "single color"=1, "two colors"=2, "three colors"=3, "multi colors"=4), selected = 0),
                             uiOutput("checkbox5"),
-                            htmlOutput("plotText2"),
-                            radioButtons("SubsetBox","Subset data?" , choices = c("no"=0, "subset Targets"=1, "subset Samples"=2, "subset Both"=3), selected = 0),
-                            uiOutput("checkbox3"),
-                            uiOutput("checkbox4"),
-                            br(),
-                            
                             conditionalPanel( condition = "input.normButton !==0",
                                               htmlOutput("GreenBand"), 
                                               actionButton("plotButton3", "Plot", 
                                                            style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
-                
+                                              
                                               actionButton("basicplotinfo", "info", 
                                                            style="color: #050505; background-color: #F1D5D3; border-color: #F1D5D3; height:60px; width:65px")
-                            )
+                            ),
+                            htmlOutput("plotText2"),
+                            radioButtons("SubsetBox","Subset data?" , choices = c("no"=0, "subset Targets"=1, "subset Samples"=2, "subset Both"=3), selected = 0),
+                            uiOutput("checkbox3"),
+                            uiOutput("checkbox4")
                             
 
-             
-             
-             
-             
-             
-             
+                            
+
              
              
              ),
@@ -134,10 +134,7 @@ ui <- fluidPage(
                        plotOutput("basicPlot", height = 800),
                        
                        tableOutput("plotTable")
-             
-             
-             
-             
+
              
              )))
   ))
