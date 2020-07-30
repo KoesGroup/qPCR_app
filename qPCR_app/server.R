@@ -3,7 +3,7 @@ library(shinyFiles)
 library(tidyverse)
 library(data.table)
 library(RColorBrewer)
-#library(xlsx)
+library(xlsx)
 
 source("FetchData.R")
 source("infoFile.R")
@@ -248,15 +248,15 @@ server <- function(input, output) {
   
 eventDownloadRefData <- observeEvent(input$download_ref_df,{
     df <- rv$normDf
-    #write.xlsx(df, "qPCR_dCt_data.xlsx", sheetName = "Sheet1", 
-    #           col.names = TRUE, row.names = FALSE, append = FALSE)
+    write.xlsx(df, "qPCR_dCt_data.xlsx", sheetName = "Sheet1", 
+               col.names = TRUE, row.names = FALSE, append = FALSE)
   })  
 
   
 eventDownloadNormData <- observeEvent(input$download_norm_df,{
   df <- rv$data2plot
-  #write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
-  #           col.names = TRUE, row.names = TRUE, append = FALSE)
+  write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
+            col.names = TRUE, row.names = TRUE, append = FALSE)
 }) 
   
   output$plotText1 <- renderText("<strong>In the plot, would you like the Targets to be grouped or the Samples.</strong>")
