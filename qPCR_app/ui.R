@@ -136,5 +136,24 @@ ui <- fluidPage(
                        tableOutput("plotTable")
 
              
-             )))
+             ))),
+   tabPanel(
+     "Premium Plot",
+     sidebarLayout(
+       sidebarPanel(
+         fileInput("expDesign",
+                   label="Choose the excel file with your Experimental Design ",
+                   multiple = FALSE),
+         actionButton("expDesignGo", "upload", 
+                      style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+         radioButtons("xAxis",
+                      "Select which variable you want to plot in the X axis:",
+                      choices = c("in progress")),
+       ),
+       mainPanel(
+         tableOutput("expDesignTable")
+
+       )
+     )
+   )
   ))
