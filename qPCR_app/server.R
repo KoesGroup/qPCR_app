@@ -4,6 +4,7 @@ library(tidyverse)
 library(data.table)
 library(RColorBrewer)
 library(xlsx)
+library(readxl)
 
 source("FetchData.R")
 source("infoFile.R")
@@ -371,6 +372,15 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
                   document.getElementById('%s').style.backgroundColor = '%s';
                   ", "wellPanelId3", "#F1D5D3"))
   })
+  
+  eventExpDesign <- observeEvent(input$expDesignGo, {
+    req(input$expDesign)
+    expDesignFile <- input$expDesign
+    expDesignDF <- read_excel(expDesignFile$datapath)
+    
+    output$expDesignTable <- renderTable(expDesignDF)
+    })
+
   
   
   
