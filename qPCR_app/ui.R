@@ -152,7 +152,6 @@ ui <- fluidPage(
        ),
        mainPanel(
          tableOutput("expDesignTable")
-
        )
      )
    )
