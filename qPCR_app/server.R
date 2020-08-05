@@ -143,7 +143,7 @@ server <- function(input, output) {
     } else {
       rv$normDf <- NULL
       normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is too high for this app.</center></font></h3>")
-
+      
     }
     output$refText <- renderText(normText)
     
@@ -153,7 +153,7 @@ server <- function(input, output) {
     }, rownames = T)
     
     output$rawPlot <- NULL #remove the existing plot from UI if the table is printed again after the data is plotted
-
+    
   })
   
   
@@ -166,7 +166,7 @@ server <- function(input, output) {
       if(is.null(choice)){
         rv$sam <- NULL
       } else {
-      rv$sam <- radioButtons("checkbox2",sampleText , choices = choice, selected = choice[1])
+        rv$sam <- radioButtons("checkbox2",sampleText , choices = choice, selected = choice[1])
       }
     } else {
       rv$sam <- NULL
@@ -210,26 +210,26 @@ server <- function(input, output) {
     runjs(sprintf("
         document.getElementById('%s').style.backgroundColor = '%s';
                   ", "wellPanelId2", "#EFBEF9"))
-    })
+  })
   
- ##   
-    event11 <- observeEvent(input$plotButton1, {
-      
-      output$refTable <- NULL
+  ##   
+  event11 <- observeEvent(input$plotButton1, {
     
-      output$rawPlot <- renderPlot({
-        
-        df <- rv$normDf
-        ggplot(df, aes(x = Sample, y = dCt))+
-          geom_col(aes(fill = Sample))+
-          facet_grid(Target~.)
-        
-      })
+    output$refTable <- NULL
+    
+    output$rawPlot <- renderPlot({
+      
+      df <- rv$normDf
+      ggplot(df, aes(x = Sample, y = dCt))+
+        geom_col(aes(fill = Sample))+
+        facet_grid(Target~.)
       
     })
     
- ## 
- event12 <- observeEvent(input$plotButton2, {
+  })
+  
+  ## 
+  event12 <- observeEvent(input$plotButton2, {
     output$refTable <- NULL
     output$refText <- NULL
     
@@ -247,22 +247,22 @@ server <- function(input, output) {
     })
   })
   
-eventDownloadRefData <- observeEvent(input$download_ref_df,{
+  eventDownloadRefData <- observeEvent(input$download_ref_df,{
     df <- rv$normDf
     write.xlsx(df, "qPCR_dCt_data.xlsx", sheetName = "Sheet1", 
                col.names = TRUE, row.names = FALSE, append = FALSE)
   })  
-
   
-eventDownloadNormData <- observeEvent(input$download_norm_df,{
-  df <- rv$data2plot
-  write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
-            col.names = TRUE, row.names = TRUE, append = FALSE)
-}) 
+  
+  eventDownloadNormData <- observeEvent(input$download_norm_df,{
+    df <- rv$data2plot
+    write.xlsx(df, "qPCR_norm_data.xlsx", sheetName = "Sheet1", 
+               col.names = TRUE, row.names = TRUE, append = FALSE)
+  }) 
   
   output$plotText1 <- renderText("<strong>In the plot, would you like the Targets to be grouped or the Samples.</strong>")
   output$plotText2 <- renderText("<strong><hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\"><br>Choose weather you want to plot the complete dataset or a subset.</strong>")
-
+  
   ## set the choices for the colors of the plots.
   output$checkbox5 <- renderUI({
     if(input$Coloroptions == 0){
@@ -294,29 +294,29 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
   
   ## Show list of used targets, to make a selection
   output$checkbox3 <- renderUI({ 
-      if (input$SubsetBox == 1 || input$SubsetBox == 3){
+    if (input$SubsetBox == 1 || input$SubsetBox == 3){
       choice2 <- rv$genes
       sampleText2 = "Choose Target(s)."
       if(is.null(choice2)){
-          rv$Tar2 <- NULL
-        } else {
-          rv$Tar2 <- checkboxGroupInput("checkbox4",sampleText2 , choices = choice2, selected = choice2[1])
-        }
+        rv$Tar2 <- NULL
+      } else {
+        rv$Tar2 <- checkboxGroupInput("checkbox4",sampleText2 , choices = choice2, selected = choice2[1])
+      }
     } else {
       rv$Tar2 <- NULL
     }
-      })
+  })
   
   output$GreenBand <- renderText("<hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\">")
   output$GreenBand2 <- renderText("<hr style=\"height:3px;border-width:0;color:#73E53E;background-color:#73E53E\">")
-
-    # Change wellpanel color back to default
+  
+  # Change wellpanel color back to default
   event14 <- observeEvent(input$plotButton3, {
     output$intro3 <- renderText("Info Box.")
     runjs(sprintf("
         document.getElementById('%s').style.backgroundColor = '%s';
                   ", "wellPanelId3", "#E2FFD4"))
-  
+    
     # r4un the data subset function from the functions file.
     plotdf <- getPlotData(rv$data2plot, input$checkbox4, input$checkbox3, input$SubsetBox)
     
@@ -331,7 +331,7 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
       colorChoice <- "Set1" 
     } else { 
       colorChoice <- input$checkbox5
-      }
+    }
     
     # build the plot either grouped by target or sample
     if(input$TarSamBox == "Targets"){
@@ -358,8 +358,8 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
     output$basicPlot <- renderPlot({
       p
     })
-
-    })
+    
+  })
   
   
   
@@ -379,11 +379,10 @@ eventDownloadNormData <- observeEvent(input$download_norm_df,{
     expDesignDF <- read_excel(expDesignFile$datapath)
     
     output$expDesignTable <- renderTable(expDesignDF)
-    })
-
+  })
+  
   
   
   
   
 }
-
