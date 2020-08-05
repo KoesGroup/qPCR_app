@@ -146,9 +146,15 @@ ui <- fluidPage(
                    multiple = FALSE),
          actionButton("expDesignGo", "upload", 
                       style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+         conditionalPanel( condition = "input.expDesignGo !==0",
+                           htmlOutput("GreenBand"), 
+                           actionButton("plotButton4", "Plot", 
+                                        style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+                           
          radioButtons("xAxis",
                       "Select which variable you want to plot in the X axis:",
-                      choices = c("in progress")),
+                      choices = c("in progress"))
+       )
        ),
        mainPanel(
          tableOutput("expDesignTable")
