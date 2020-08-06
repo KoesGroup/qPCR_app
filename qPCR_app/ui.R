@@ -157,14 +157,14 @@ ui <- fluidPage(
                          actionButton("plotButton4", "Plot", 
                                       style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
                          
-                         radioButtons("xAxis",
-                                      "Select which variable you want to plot in the X axis:",
-                                      choices = c("in progress"))
+                         #uiOutput("plotTarget")
+                         checkboxGroupInput("targetChoice", "select target:", choices = NULL)
        )
        ),
        mainPanel(
          tableOutput("expDesignTable"),
-         tableOutput("plotTable2")
+         tableOutput("plotTable2"),
+         uiOutput("targetGenes")
        )
      )
    )

@@ -9,7 +9,7 @@ library(readxl)
 source("FetchData.R")
 source("infoFile.R")
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   output$intro1 <- renderText("info box. Upon clicking on an info button, information will be displayed here.")
   rv <- reactiveValues(df = NULL, rawDf = NULL, targets = NULL, genes = NULL, refs = NULL, normDf = NULL,
                        samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL, sam2 = NULL, expDesignDF = NULL)  
@@ -376,21 +376,64 @@ server <- function(input, output) {
   eventExpDesign <- observeEvent(input$expDesignGo, {
     req(input$expDesign)
     expDesignFile <- input$expDesign
-    expDesignDF <- read_excel(expDesignFile$datapath)
+    rv$expDesignDF <- read_excel(expDesignFile$datapath)
     
-    output$expDesignTable <- renderTable(expDesignDF)
+    output$expDesignTable <- renderTable(rv$expDesignDF)
     
     normDF <- rv$data2plot
+    
+    #output$targetGenes <- renderTable(normDF)
+    targetList <- unique(factor(normDF$Target))
+    
+    updateCheckboxGroupInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
+    
+    #output$plotTarget <- renderUI(
+      #checkboxGroupInput("plotTarget", label = "Select which target gene you want to plot:",
+                         #choices = targetList, selected = targetList[1])
+    #)
+    #print(input$plotTarget)
+    #targetsQuote <- shQuote(input$targetChoice, type = "cmd")
+    #print(targetsQuote)
+    
+  #  #selTargets <- sprintf(paste0("Target", " == %s"), targetsQuote)
+   # print(selTargets)
+   # selTargetsCondition <- paste(factor(selTargets), collapse = " | ")
+   # print(selTargetsCondition)
       
-    df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter(Target == "FRO2")
+   # df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
+  #  df[1] <- NULL
+    
+  #  output$plotTable2  <- renderTable(df)
   
   })
   
   eventAdvPlot <- observeEvent(input$plotButton4, {
     
+    output$expDesignTable <- NULL
+    
+    normDF <- rv$data2plot
+    expDesignDF <- rv$expDesignDF
+    
+    #output$targetGenes <- renderTable(normDF)
+    targetList <- unique(factor(normDF$Target))
+    
+    print(input$plotTarget)
+    targetsQuote <- shQuote(input$targetChoice, type = "cmd")
+    print(targetsQuote)
+    
+    selTargets <- sprintf(paste0("Target", " == %s"), targetsQuote)
+    print(selTargets)
+    selTargetsCondition <- paste(factor(selTargets), collapse = " | ")
+    print(selTargetsCondition)
+    
+    df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
+    df[1] <- NULL
+    
     output$plotTable2  <- renderTable(df) 
     
-    #until here it works to join the experimental design with the qPCR data
+    #df contains the data to plot. I need to add the axis selection
+    
+
     
   })
   
