@@ -151,6 +151,8 @@ ui <- fluidPage(
                       style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
 
        conditionalPanel( condition = "input.expDesignGo !==0",
+                         
+                         
 
                          actionButton("plotButton4", "Plot", 
                                       style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
@@ -161,7 +163,8 @@ ui <- fluidPage(
        )
        ),
        mainPanel(
-         tableOutput("expDesignTable")
+         tableOutput("expDesignTable"),
+         tableOutput("plotTable2")
        )
      )
    )

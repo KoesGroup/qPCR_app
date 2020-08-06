@@ -19,6 +19,16 @@ ggplot(dfM, aes(x = xAxisChoice, y = ddCtmean, fill = ecotype))+ #if no fill sho
   geom_col(position = position_dodge())+ #needs fill to properly dodge
   geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
 
+targets <- c("FRO2", "FRO3")
 
+targetsQuote <- shQuote(targets, type = "cmd")
+
+  
+selTargets <- sprintf(paste0("Target", " == %s"), targetsQuote)
+selTargets
+selTargetsCondition <- paste(factor(selTargets), collapse = " | ")
+selTargetsCondition
+
+df <- left_join(normData, expDesign, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
 
 

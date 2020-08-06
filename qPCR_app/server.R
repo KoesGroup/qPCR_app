@@ -12,7 +12,7 @@ source("infoFile.R")
 server <- function(input, output) {
   output$intro1 <- renderText("info box. Upon clicking on an info button, information will be displayed here.")
   rv <- reactiveValues(df = NULL, rawDf = NULL, targets = NULL, genes = NULL, refs = NULL, normDf = NULL,
-                       samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL, sam2 = NULL)  
+                       samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL, sam2 = NULL, expDesignDF = NULL)  
   
   
   # set default colors for the wellpanels.
@@ -379,9 +379,20 @@ server <- function(input, output) {
     expDesignDF <- read_excel(expDesignFile$datapath)
     
     output$expDesignTable <- renderTable(expDesignDF)
+    
+    normDF <- rv$data2plot
+      
+    df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter(Target == "FRO2")
+  
   })
   
-  
+  eventAdvPlot <- observeEvent(input$plotButton4, {
+    
+    output$plotTable2  <- renderTable(df) 
+    
+    #until here it works to join the experimental design with the qPCR data
+    
+  })
   
   
   
