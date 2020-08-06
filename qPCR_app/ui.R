@@ -98,7 +98,8 @@ ui <- fluidPage(
                  
                  
                )
-             )),
+             )
+            ),
     tabPanel("Basic plot",
              sidebarLayout(
                sidebarPanel(style = "background: #E2FFD4; border: #E2FFD4",
@@ -136,5 +137,39 @@ ui <- fluidPage(
                        tableOutput("plotTable")
 
              
-             )))
-  ))
+          )
+        )
+      ),
+   tabPanel(
+     "Premium Plot",
+     sidebarLayout(
+       sidebarPanel(
+         fileInput("expDesign",
+                   label="Choose the excel file with your Experimental Design ",
+                   multiple = FALSE),
+         actionButton("expDesignGo", "upload", 
+                      style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+
+       conditionalPanel( condition = "input.expDesignGo !==0",
+                         
+                         
+
+                         actionButton("plotButton4", "Plot", 
+                                      style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+                         
+                         #uiOutput("plotTarget")
+                         checkboxGroupInput("targetChoice", "select target:", choices = NULL)
+       )
+       ),
+       mainPanel(
+         tableOutput("expDesignTable"),
+         tableOutput("plotTable2"),
+         uiOutput("targetGenes")
+       )
+     )
+   )
+)
+)
+
+
+
