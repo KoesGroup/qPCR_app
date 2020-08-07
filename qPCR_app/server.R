@@ -432,8 +432,15 @@ server <- function(input, output, session) {
       mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
       ungroup()
     
-    output$plotTable2  <- renderTable(dfM) 
+    #output$plotTable2  <- renderTable(dfM) 
     
+    output$advPlot <- renderPlot(
+      ggplot(dfM, aes(x = copper, y = ddCtmean, fill = ecotype))+
+        geom_col(position = position_dodge())+ #needs fill to properly dodge
+        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
+    )
+    
+    #Need to select the fill of the plot and the axis
     #dfM contains the data to plot. I need to add the axis selection
     
 

@@ -164,7 +164,8 @@ ui <- fluidPage(
        mainPanel(
          tableOutput("expDesignTable"),
          tableOutput("plotTable2"),
-         uiOutput("targetGenes")
+         uiOutput("targetGenes"),
+         plotOutput("advPlot")
        )
      )
    )
