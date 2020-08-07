@@ -427,11 +427,14 @@ server <- function(input, output, session) {
     print(selTargetsCondition)
     
     df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
-    df[1] <- NULL
+    #df[1] <- NULL
+    dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd)) %>% 
+      mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
+      ungroup()
     
-    output$plotTable2  <- renderTable(df) 
+    output$plotTable2  <- renderTable(dfM) 
     
-    #df contains the data to plot. I need to add the axis selection
+    #dfM contains the data to plot. I need to add the axis selection
     
 
     
