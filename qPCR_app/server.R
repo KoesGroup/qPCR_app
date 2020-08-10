@@ -385,7 +385,7 @@ server <- function(input, output, session) {
     #output$targetGenes <- renderTable(normDF)
     targetList <- unique(factor(normDF$Target))
     
-    updateCheckboxGroupInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
+    updateSelectInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
     
     #output$plotTarget <- renderUI(
       #checkboxGroupInput("plotTarget", label = "Select which target gene you want to plot:",
@@ -419,7 +419,6 @@ server <- function(input, output, session) {
     
     print(input$plotTarget)
     targetsQuote <- shQuote(input$targetChoice, type = "cmd")
-    print(targetsQuote)
     
     selTargets <- sprintf(paste0("Target", " == %s"), targetsQuote)
     print(selTargets)
@@ -447,6 +446,11 @@ server <- function(input, output, session) {
     
   })
   
+  output$knowNothing <- renderImage({
+    list(src = "knowNothing-gif.gif")
+  }, deleteFile = F)
+  
+
   
   
 }
