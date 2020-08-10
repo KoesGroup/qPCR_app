@@ -145,6 +145,15 @@ server <- function(input, output, session) {
       normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is too high for this app.</center></font></h3>")
       
     }
+    
+    if(is.null(rv$df)){
+      output$knowNothing <-  renderImage({
+        list(src = "knowNothing-gif.gif")
+      }, deleteFile = F)
+    }else{
+      output$knowNothing <- NULL
+    }
+    
     output$refText <- renderText(normText)
     
     output$refTable <- renderTable({   
@@ -446,10 +455,12 @@ server <- function(input, output, session) {
     
   })
   
-  output$knowNothing <- renderImage({
-    list(src = "knowNothing-gif.gif")
-  }, deleteFile = F)
-  
+
+ #   output$knowNothing <-  renderImage({
+  #    list(src = "knowNothing-gif.gif")
+ # }, deleteFile = F)
+
+
 
   
   

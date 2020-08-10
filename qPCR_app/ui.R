@@ -90,8 +90,7 @@ ui <- fluidPage(
                mainPanel(useShinyjs(),
                          wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
                            htmlOutput("intro2"),id = "wellPanelId2"
-                         ),
-                         
+                         ),imageOutput("knowNothing"),
                          htmlOutput("refText"),
                          tableOutput("refTable"),
                          plotOutput("rawPlot", height = 800)
@@ -165,6 +164,7 @@ ui <- fluidPage(
           tableOutput("expDesignTable"),
           tableOutput("plotTable2"),
           uiOutput("targetGenes")
+
         )
       )
     ),
@@ -172,7 +172,7 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(),
                mainPanel(
-                 imageOutput("knowNothing")
+                 imageOutput("knowNothing1")
                )
              ))
   )
