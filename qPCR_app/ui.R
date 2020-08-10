@@ -9,44 +9,44 @@ ui <- fluidPage(
     tabPanel("Input",
              sidebarLayout(
                sidebarPanel(style = "background: #ECF5FF; border: #ECF5FF",
-                 fileInput("csvs",
-                           label="Choose 1 or more xlsx or xls files",
-                           multiple = TRUE),
-                 
-                 actionButton("goButton", "upload", 
-                              style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
-                 actionButton("uploadInfo", "info", 
-                              style="color: #050505; background-color: #F1D5D3; border-color: #F1D5D3; height:60px; width:65px"),
-                 htmlOutput("border1"),
-                 
-                 sliderInput("OutTrash", "max difference between technical replicates.", min = 0.00, max = 5.00, value = 0.50, step = 0.01),
-                 actionButton("outButton", "outleyers", 
-                              style="color: #fff; background-color: #2EAF2E; border-color: #2EAF2E; height:60px; width:130px"),
-                 actionButton("outlayersInfo", "info", 
-                              style="color: #050505; background-color: #C9EEC4; border-color: #C9EEC4; height:60px; width:65px"),
-                 htmlOutput("border2"),
-                 br(),
-                 actionButton("TargetButton", "Targets", 
-                              style="color: #fff; background-color: #1C1CE3; border-color: #1C1CE3; height:60px; width:130px"),
-                 actionButton("targetInfo", "info", 
-                              style="color: #050505; background-color: #C6CEEC; border-color: #C6CEEC; height:60px; width:65px")
-                 
-                 
-                 
-                 
-                 
+                            fileInput("csvs",
+                                      label="Choose 1 or more xlsx or xls files",
+                                      multiple = TRUE),
+                            
+                            actionButton("goButton", "upload", 
+                                         style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+                            actionButton("uploadInfo", "info", 
+                                         style="color: #050505; background-color: #F1D5D3; border-color: #F1D5D3; height:60px; width:65px"),
+                            htmlOutput("border1"),
+                            
+                            sliderInput("OutTrash", "max difference between technical replicates.", min = 0.00, max = 5.00, value = 0.50, step = 0.01),
+                            actionButton("outButton", "outleyers", 
+                                         style="color: #fff; background-color: #2EAF2E; border-color: #2EAF2E; height:60px; width:130px"),
+                            actionButton("outlayersInfo", "info", 
+                                         style="color: #050505; background-color: #C9EEC4; border-color: #C9EEC4; height:60px; width:65px"),
+                            htmlOutput("border2"),
+                            br(),
+                            actionButton("TargetButton", "Targets", 
+                                         style="color: #fff; background-color: #1C1CE3; border-color: #1C1CE3; height:60px; width:130px"),
+                            actionButton("targetInfo", "info", 
+                                         style="color: #050505; background-color: #C6CEEC; border-color: #C6CEEC; height:60px; width:65px")
+                            
+                            
+                            
+                            
+                            
                ),
                #h4(htmlOutput("text1")),
                mainPanel(useShinyjs(),
-                 wellPanel(
+                         wellPanel(
                            htmlOutput("intro1"),id = "wellPanelId1"
-                 ),
-                 
-                 tableOutput("contents")
+                         ),
+                         
+                         tableOutput("contents")
                )
              )
     ),
-   tabPanel("Normalization",
+    tabPanel("Normalization",
              sidebarLayout(
                sidebarPanel(style = "background: #FCFDE6; border: #FCFDE6",
                             uiOutput("checkbox"),
@@ -74,7 +74,7 @@ ui <- fluidPage(
                                               
                                               conditionalPanel( condition = "input.normButton !==0",
                                                                 htmlOutput("spaceje2"),
-                                                              
+                                                                
                                                                 actionButton("download_norm_df", "Download Normalized Data",
                                                                              style="color: #050505; background-color: #c73de3; border-color: #c73de3;  height:30px; width:199px"),
                                                                 br(),
@@ -82,24 +82,23 @@ ui <- fluidPage(
                                                                 actionButton("plotButton2", "Plot", 
                                                                              style="color: #050505; background-color:#da7eed; border-color: #da7eed;  height:30px; width:199px")
                                               )
-
-                                              )
+                                              
+                            )
                             
-                                                                                               
+                            
                ),
                mainPanel(useShinyjs(),
-                 wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
+                         wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
                            htmlOutput("intro2"),id = "wellPanelId2"
-                 ),
-                 
-                 htmlOutput("refText"),
-                 tableOutput("refTable"),
-                 plotOutput("rawPlot", height = 800)
-                 
-                 
+                         ),imageOutput("knowNothing"),
+                         htmlOutput("refText"),
+                         tableOutput("refTable"),
+                         plotOutput("rawPlot", height = 800)
+                         
+                         
                )
              )
-            ),
+    ),
     tabPanel("Basic plot",
              sidebarLayout(
                sidebarPanel(style = "background: #E2FFD4; border: #E2FFD4",
@@ -122,54 +121,61 @@ ui <- fluidPage(
                             uiOutput("checkbox3"),
                             uiOutput("checkbox4")
                             
-
                             
-
-             
-             
-             ),
-             mainPanel(useShinyjs(),
-                       wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
-                         htmlOutput("intro3"),id = "wellPanelId3"
-                       ),
-                       plotOutput("basicPlot", height = 800),
-                       
-                       tableOutput("plotTable")
-
-             
+                            
+                            
+                            
+                            
+               ),
+               mainPanel(useShinyjs(),
+                         wellPanel(#style = "background: #D1FFD1; border: #D1FFD1",
+                           htmlOutput("intro3"),id = "wellPanelId3"
+                         ),
+                         plotOutput("basicPlot", height = 800),
+                         
+                         tableOutput("plotTable")
+                         
+                         
+               )
+             )
+    ),
+    tabPanel(
+      "Premium Plot",
+      sidebarLayout(
+        sidebarPanel(
+          fileInput("expDesign",
+                    label="Choose the excel file with your Experimental Design ",
+                    multiple = FALSE),
+          actionButton("expDesignGo", "upload", 
+                       style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+          
+          conditionalPanel( condition = "input.expDesignGo !==0",
+                            
+                            
+                            
+                            actionButton("plotButton4", "Plot", 
+                                         style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+                            
+                            #uiOutput("plotTarget")
+                            checkboxGroupInput("targetChoice", "select target:", choices = NULL)
           )
+        ),
+        mainPanel(
+          tableOutput("expDesignTable"),
+          tableOutput("plotTable2"),
+          uiOutput("targetGenes")
+
         )
-      ),
-   tabPanel(
-     "Premium Plot",
-     sidebarLayout(
-       sidebarPanel(
-         fileInput("expDesign",
-                   label="Choose the excel file with your Experimental Design ",
-                   multiple = FALSE),
-         actionButton("expDesignGo", "upload", 
-                      style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
-
-       conditionalPanel( condition = "input.expDesignGo !==0",
-                         
-                         
-
-                         actionButton("plotButton4", "Plot", 
-                                      style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
-                         
-                         #uiOutput("plotTarget")
-                         checkboxGroupInput("targetChoice", "select target:", choices = NULL)
-       )
-       ),
-       mainPanel(
-         tableOutput("expDesignTable"),
-         tableOutput("plotTable2"),
-         uiOutput("targetGenes")
-       )
-     )
-   )
+      )
+    ),
+    tabPanel("barcelona",
+             sidebarLayout(
+               sidebarPanel(),
+               mainPanel(
+                 imageOutput("knowNothing1")
+               )
+             ))
+  )
 )
-)
-
 
 

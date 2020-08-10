@@ -145,6 +145,15 @@ server <- function(input, output, session) {
       normText <- paste0("<h3><font color=\"#fa461e\"><center><br><br><br>your chosen number of reference genes (", length(input$checkbox),") <br>  is too high for this app.</center></font></h3>")
       
     }
+    
+    if(is.null(rv$df)){
+      output$knowNothing <-  renderImage({
+        list(src = "knowNothing-gif.gif")
+      }, deleteFile = F)
+    }else{
+      output$knowNothing <- NULL
+    }
+    
     output$refText <- renderText(normText)
     
     output$refTable <- renderTable({   
@@ -385,7 +394,7 @@ server <- function(input, output, session) {
     #output$targetGenes <- renderTable(normDF)
     targetList <- unique(factor(normDF$Target))
     
-    updateCheckboxGroupInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
+    updateSelectInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
     
     #output$plotTarget <- renderUI(
       #checkboxGroupInput("plotTarget", label = "Select which target gene you want to plot:",
@@ -419,7 +428,6 @@ server <- function(input, output, session) {
     
     print(input$plotTarget)
     targetsQuote <- shQuote(input$targetChoice, type = "cmd")
-    print(targetsQuote)
     
     selTargets <- sprintf(paste0("Target", " == %s"), targetsQuote)
     print(selTargets)
@@ -427,16 +435,33 @@ server <- function(input, output, session) {
     print(selTargetsCondition)
     
     df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
-    df[1] <- NULL
+    #df[1] <- NULL
+    dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd)) %>% 
+      mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
+      ungroup()
     
-    output$plotTable2  <- renderTable(df) 
+    #output$plotTable2  <- renderTable(dfM) 
     
-    #df contains the data to plot. I need to add the axis selection
+    output$advPlot <- renderPlot(
+      ggplot(dfM, aes(x = copper, y = ddCtmean, fill = ecotype))+
+        geom_col(position = position_dodge())+ #needs fill to properly dodge
+        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
+    )
+    
+    #Need to select the fill of the plot and the axis
+    #dfM contains the data to plot. I need to add the axis selection
     
 
     
   })
   
+
+ #   output$knowNothing <-  renderImage({
+  #    list(src = "knowNothing-gif.gif")
+ # }, deleteFile = F)
+
+
+
   
   
 }
