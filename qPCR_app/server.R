@@ -399,7 +399,7 @@ server <- function(input, output, session) {
     updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
     updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
    observe({ 
-     fillList <- axisList[which(factor(axisList) != input$xAxisChoice)]
+    fillList <- axisList[which(factor(axisList) != input$xAxisChoice)]
     updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
     print(input$xAxisChoice)
    })
