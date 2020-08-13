@@ -20,7 +20,7 @@ ui <- fluidPage(
                             htmlOutput("border1"),
                             
                             sliderInput("OutTrash", "max difference between technical replicates.", min = 0.00, max = 5.00, value = 0.50, step = 0.01),
-                            actionButton("outButton", "outleyers", 
+                            actionButton("outButton", "outlayers", 
                                          style="color: #fff; background-color: #2EAF2E; border-color: #2EAF2E; height:60px; width:130px"),
                             actionButton("outlayersInfo", "info", 
                                          style="color: #050505; background-color: #C9EEC4; border-color: #C9EEC4; height:60px; width:65px"),
@@ -157,13 +157,17 @@ ui <- fluidPage(
                                          style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
                             
                             #uiOutput("plotTarget")
-                            checkboxGroupInput("targetChoice", "select target:", choices = NULL)
+                            checkboxGroupInput("targetChoice", "select target:", choices = NULL),
+                            radioButtons("xAxisChoice", "select variable in X axis", choices = c("no data uploaded")),
+                            radioButtons("fillChoice", "select which variable you want to colour:", choices = c("no data uploaded"))
+                            
           )
         ),
         mainPanel(
           tableOutput("expDesignTable"),
           tableOutput("plotTable2"),
-          uiOutput("targetGenes")
+          uiOutput("targetGenes"),
+          plotOutput("advPlot", height = 800)
 
         )
       )

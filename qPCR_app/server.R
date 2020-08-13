@@ -390,31 +390,21 @@ server <- function(input, output, session) {
     output$expDesignTable <- renderTable(rv$expDesignDF)
     
     normDF <- rv$data2plot
+    expDesignDF <- rv$expDesignDF
     
     #output$targetGenes <- renderTable(normDF)
     targetList <- unique(factor(normDF$Target))
+    axisList <- colnames(expDesignDF[,which(names(expDesignDF) != "Sample")])
     
-    updateSelectInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
-    
-    #output$plotTarget <- renderUI(
-      #checkboxGroupInput("plotTarget", label = "Select which target gene you want to plot:",
-                         #choices = targetList, selected = targetList[1])
-    #)
-    #print(input$plotTarget)
-    #targetsQuote <- shQuote(input$targetChoice, type = "cmd")
-    #print(targetsQuote)
-    
-  #  #selTargets <- sprintf(paste0("Target", " == %s"), targetsQuote)
-   # print(selTargets)
-   # selTargetsCondition <- paste(factor(selTargets), collapse = " | ")
-   # print(selTargetsCondition)
-      
-   # df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
-  #  df[1] <- NULL
-    
-  #  output$plotTable2  <- renderTable(df)
-  
-  })
+    updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
+    updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
+   observe({ 
+    fillList <- axisList[which(factor(axisList) != input$xAxisChoice)]
+    updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
+    print(input$xAxisChoice)
+   })
+
+})
   
   eventAdvPlot <- observeEvent(input$plotButton4, {
     
@@ -440,28 +430,27 @@ server <- function(input, output, session) {
       mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
       ungroup()
     
-    #output$plotTable2  <- renderTable(dfM) 
+    output$plotTable2  <- renderTable(dfM) 
     
-    output$advPlot <- renderPlot(
-      ggplot(dfM, aes(x = copper, y = ddCtmean, fill = ecotype))+
-        geom_col(position = position_dodge())+ #needs fill to properly dodge
-        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
-    )
+    xAxis <- input$xAxisChoice
+    print(xAxis)
     
-    #Need to select the fill of the plot and the axis
-    #dfM contains the data to plot. I need to add the axis selection
-    
+    fillVar <- input$fillChoice
+    print(fillVar)
 
+    
+   output$advPlot <- renderPlot(
+      ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
+       geom_col(position = position_dodge())+ #needs fill to properly dodge
+        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
+   )
+    
+    #updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
+   # print(input$xAxisChoice)
     
   })
   
-
- #   output$knowNothing <-  renderImage({
-  #    list(src = "knowNothing-gif.gif")
- # }, deleteFile = F)
-
-
-
-  
-  
 }
+
+
+
