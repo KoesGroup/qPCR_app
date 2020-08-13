@@ -396,9 +396,10 @@ server <- function(input, output, session) {
     targetList <- unique(factor(normDF$Target))
     axisList <- colnames(expDesignDF[,which(names(expDesignDF) != "Sample")])
     
+
     updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
     updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
-  
+
   })
   
   eventAdvPlot <- observeEvent(input$plotButton4, {
@@ -429,6 +430,7 @@ server <- function(input, output, session) {
     
     xAxis <- input$xAxisChoice
     print(xAxis)
+
     
     output$advPlot <- renderPlot(
       ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = ecotype))+
