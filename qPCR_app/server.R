@@ -394,7 +394,7 @@ server <- function(input, output, session) {
     #output$targetGenes <- renderTable(normDF)
     targetList <- unique(factor(normDF$Target))
     
-    updateSelectInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
+    updateCheckboxGroupInput(session, "targetChoice", label = "select target", choices = targetList, selected = targetList[1])
     
     #output$plotTarget <- renderUI(
       #checkboxGroupInput("plotTarget", label = "Select which target gene you want to plot:",
@@ -448,20 +448,11 @@ server <- function(input, output, session) {
         geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
     )
     
-    #Need to select the fill of the plot and the axis
-    #dfM contains the data to plot. I need to add the axis selection
+
+    #dfM contains the data to plot. 
     
 
     
   })
-  
-
- #   output$knowNothing <-  renderImage({
-  #    list(src = "knowNothing-gif.gif")
- # }, deleteFile = F)
-
-
-
-  
   
 }

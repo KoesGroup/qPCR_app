@@ -15,10 +15,14 @@ print(colnames(dfM))
 
 xAxisChoice <- df1$copper
 
-ggplot(dfM, aes(x = xAxisChoice, y = ddCtmean, fill = ecotype))+ #if no fill should we fill by Target?
+colnames(dfM[,which(names(dfM) != "copper")])
+
+ggplot(dfM, aes(x = xAxisChoice, y = ddCtmean, fill = copper))+ #if no fill should we fill by Target?
   geom_col(position = position_dodge())+ #needs fill to properly dodge
   geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
 
+
+###############
 targets <- c("SpSAND")
 
 targetsQuote <- shQuote(targets, type = "cmd")
@@ -32,4 +36,4 @@ selTargetsCondition
 df <- left_join(normData, expDesign, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
 
 unique(factor(normData$Target))
-
+#############
