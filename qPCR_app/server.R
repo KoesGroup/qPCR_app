@@ -396,9 +396,10 @@ server <- function(input, output, session) {
     targetList <- unique(factor(normDF$Target))
     axisList <- colnames(expDesignDF[,which(names(expDesignDF) != "Sample")])
     
-
     updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
     updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
+    fillList <- colnames(expDesignDF[,which(names(expDesignDF) != input$xAxisChoice)])
+    updateRadioButtons(session, "fillChoices", label = "Select variable in X axis:", choices = fillList, selected = fillList[1])
 
   })
   
@@ -430,6 +431,8 @@ server <- function(input, output, session) {
     
     xAxis <- input$xAxisChoice
     print(xAxis)
+    
+    fillVar <- input$fillVar
 
     
     output$advPlot <- renderPlot(

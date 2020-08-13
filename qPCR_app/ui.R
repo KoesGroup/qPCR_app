@@ -158,7 +158,8 @@ ui <- fluidPage(
                             
                             #uiOutput("plotTarget")
                             checkboxGroupInput("targetChoice", "select target:", choices = NULL),
-                            radioButtons("xAxisChoice", "select variable in X axis", choices = c("no data uploaded"))
+                            radioButtons("xAxisChoice", "select variable in X axis", choices = c("no data uploaded")),
+                            radioButtons("fillChoice", "select which variable you want to colour:", choices = c("no data uploaded"))
                             
           )
         ),
