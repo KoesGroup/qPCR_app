@@ -157,7 +157,9 @@ ui <- fluidPage(
                                          style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
                             
                             #uiOutput("plotTarget")
-                            checkboxGroupInput("targetChoice", "select target:", choices = NULL)
+                            checkboxGroupInput("targetChoice", "select target:", choices = NULL),
+                            radioButtons("xAxisChoice", "select variable in X axis", choices = c("no data uploaded"))
+                            
           )
         ),
         mainPanel(

@@ -17,6 +17,9 @@ xAxisChoice <- df1$copper
 
 colnames(dfM[,which(names(dfM) != "copper")])
 
+test <- "hola"
+noquote(test)
+
 ggplot(dfM, aes(x = xAxisChoice, y = ddCtmean, fill = copper))+ #if no fill should we fill by Target?
   geom_col(position = position_dodge())+ #needs fill to properly dodge
   geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
