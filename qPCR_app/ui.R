@@ -20,7 +20,7 @@ ui <- fluidPage(
                             htmlOutput("border1"),
                             
                             sliderInput("OutTrash", "max difference between technical replicates.", min = 0.00, max = 5.00, value = 0.50, step = 0.01),
-                            actionButton("outButton", "outleyers", 
+                            actionButton("outButton", "outlayers", 
                                          style="color: #fff; background-color: #2EAF2E; border-color: #2EAF2E; height:60px; width:130px"),
                             actionButton("outlayersInfo", "info", 
                                          style="color: #050505; background-color: #C9EEC4; border-color: #C9EEC4; height:60px; width:65px"),

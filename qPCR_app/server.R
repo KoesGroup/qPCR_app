@@ -398,10 +398,13 @@ server <- function(input, output, session) {
     
     updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
     updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
-    fillList <- colnames(expDesignDF[,which(names(expDesignDF) != input$xAxisChoice)])
-    updateRadioButtons(session, "fillChoices", label = "Select variable in X axis:", choices = fillList, selected = fillList[1])
+   observe({ 
+     fillList <- axisList[which(factor(axisList) != input$xAxisChoice)]
+    updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
+    print(input$xAxisChoice)
+   })
 
-  })
+})
   
   eventAdvPlot <- observeEvent(input$plotButton4, {
     
@@ -432,20 +435,22 @@ server <- function(input, output, session) {
     xAxis <- input$xAxisChoice
     print(xAxis)
     
-    fillVar <- input$fillVar
+    fillVar <- input$fillChoice
+    print(fillVar)
 
     
-    output$advPlot <- renderPlot(
-      ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = ecotype))+
-        geom_col(position = position_dodge())+ #needs fill to properly dodge
+   output$advPlot <- renderPlot(
+      ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
+       geom_col(position = position_dodge())+ #needs fill to properly dodge
         geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
-    )
+   )
     
-
-    #dfM contains the data to plot. 
-    
-
+    #updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
+   # print(input$xAxisChoice)
     
   })
   
 }
+
+
+

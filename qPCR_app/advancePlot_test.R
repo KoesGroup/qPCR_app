@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 
 normData <- read_excel("qPCR_norm_data.xlsx")
-expDesign <- read_excel("expDesignFRO2.xlsx")
+expDesign <- read_excel("3_expDesignFRO2.xlsx")
 
 df1 <- left_join(normData, expDesign, by = "Sample") %>% drop_na() %>% filter(Target == "FRO2")
 df1[1] <- NULL
@@ -16,6 +16,15 @@ print(colnames(dfM))
 xAxisChoice <- df1$copper
 
 colnames(dfM[,which(names(dfM) != "copper")])
+
+
+axisList <- colnames(expDesign[,which(names(expDesign) != "Sample")])
+axisList
+fillList <- axisList[which(factor(axisList) != "copper")]
+fillList
+factor(axisList)
+
+
 
 ggplot(dfM, aes(x = xAxisChoice, y = ddCtmean, fill = copper))+ #if no fill should we fill by Target?
   geom_col(position = position_dodge())+ #needs fill to properly dodge
