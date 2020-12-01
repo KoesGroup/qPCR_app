@@ -424,21 +424,23 @@ server <- function(input, output, session) {
     selTargetsCondition <- paste(factor(selTargets), collapse = " | ")
     print(selTargetsCondition)
     
-    df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
-    #df[1] <- NULL
-    dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd)) %>% 
-      mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
-      ungroup()
-    
-    output$plotTable2  <- renderTable(dfM) 
-    
     xAxis <- input$xAxisChoice
     print(xAxis)
     
     fillVar <- input$fillChoice
     print(fillVar)
+ 
+    df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
+    #df[1] <- NULL
+    errorGroup <- colnames(expDesignDF[,which(!names(expDesignDF) %in% c("Sample", fillVar,xAxis))])
+    print(errorGroup)
+    dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd, -errorGroup)) %>%
+      mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
+      ungroup()
+  
+    output$plotTable2  <- renderTable(dfM) 
 
-    
+  
    output$advPlot <- renderPlot(
       ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
        geom_col(position = position_dodge())+ #needs fill to properly dodge
