@@ -44,6 +44,10 @@ ui <- fluidPage(
                          
                          tableOutput("contents")
                )
+             ),
+             fluidRow(
+               column(12, style = "margin-top: auto; text-align: justify", h6("This app have been developed by the Plant Development and (Epi)Genetics Department of
+                       the University of Amsterdam."))
              )
     ),
     tabPanel("Normalization",
@@ -171,14 +175,7 @@ ui <- fluidPage(
 
         )
       )
-    ),
-    tabPanel("barcelona",
-             sidebarLayout(
-               sidebarPanel(),
-               mainPanel(
-                 imageOutput("knowNothing1")
-               )
-             ))
+    )
   )
 )
 
