@@ -163,7 +163,12 @@ ui <- fluidPage(
                             #uiOutput("plotTarget")
                             checkboxGroupInput("targetChoice", "select target:", choices = NULL),
                             radioButtons("xAxisChoice", "select variable in X axis", choices = c("no data uploaded")),
-                            radioButtons("fillChoice", "select which variable you want to colour:", choices = c("no data uploaded"))
+                            radioButtons("fillChoice", "select which variable you want to colour:", choices = c("no data uploaded")),
+                            hr(),
+                            radioButtons("facet", "Would you like to facet the plots by a given variable?", 
+                                         choices = c("yes", "no"), selected = "no"),
+                            conditionalPanel(condition = "input.facet == 'yes' ",
+                                             radioButtons("facetChoice", "by which variable?", choices = c("no data uploaded")))
                             
           )
         ),
