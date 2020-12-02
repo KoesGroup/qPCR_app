@@ -394,7 +394,8 @@ server <- function(input, output, session) {
     
     #output$targetGenes <- renderTable(normDF)
     targetList <- unique(factor(normDF$Target))
-    axisList <- colnames(expDesignDF[,which(names(expDesignDF) != "Sample")])
+    axisList <- c(colnames(expDesignDF[,which(names(expDesignDF) != "Sample")]), "Target")
+                    
     
     updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
     updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
