@@ -394,7 +394,8 @@ server <- function(input, output, session) {
     
     #output$targetGenes <- renderTable(normDF)
     targetList <- unique(factor(normDF$Target))
-    axisList <- colnames(expDesignDF[,which(names(expDesignDF) != "Sample")])
+    axisList <- c(colnames(expDesignDF[,which(names(expDesignDF) != "Sample")]), "Target")
+                    
     
     updateCheckboxGroupInput(session, "targetChoice", label = "Select target:", choices = targetList, selected = targetList[1])
     updateRadioButtons(session, "xAxisChoice", label = "Select variable in X axis:", choices = axisList, selected = axisList[1])
@@ -402,9 +403,16 @@ server <- function(input, output, session) {
     fillList <- axisList[which(factor(axisList) != input$xAxisChoice)]
     updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
     print(input$xAxisChoice)
+    
+       observe({
+        facetList <- fillList[which(factor(fillList) != input$fillChoice)]
+        updateRadioButtons(session, "facetChoice", choices = facetList, selected = facetList[1])
+              })
+    
+           })
+    
    })
 
-})
   
   eventAdvPlot <- observeEvent(input$plotButton4, {
     
@@ -429,23 +437,48 @@ server <- function(input, output, session) {
     
     fillVar <- input$fillChoice
     print(fillVar)
- 
+ if(input$facet == "no"){
     df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
     #df[1] <- NULL
     errorGroup <- colnames(expDesignDF[,which(!names(expDesignDF) %in% c("Sample", fillVar,xAxis))])
     print(errorGroup)
-    dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd, -errorGroup)) %>%
+    dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd, -all_of(errorGroup))) %>%
       mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
       ungroup()
   
-    output$plotTable2  <- renderTable(dfM) 
+    #output$plotTable2  <- renderTable(dfM) 
 
   
    output$advPlot <- renderPlot(
       ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
        geom_col(position = position_dodge())+ #needs fill to properly dodge
-        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())
+        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())+
+        labs(fill = fillVar)+
+        xlab(xAxis)
+        
    )
+ }else{
+   
+   facetVar <- input$facetChoice
+   
+   df <- left_join(normDF, expDesignDF, by = "Sample") %>% drop_na() %>% filter_(selTargetsCondition)
+   
+   errorGroup <- colnames(expDesignDF[,which(!names(expDesignDF) %in% c("Sample", fillVar,xAxis, facetVar))])
+   print(errorGroup)
+   
+   dfM <-   df %>% group_by_at(vars(-Sample, -ddCt, -CTstd, -all_of(errorGroup))) %>%
+     mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
+     ungroup()
+   
+   output$advPlot <- renderPlot(
+     ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
+       geom_col(position = position_dodge())+ #needs fill to properly dodge
+       geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())+
+       facet_grid(.~get(facetVar))+
+       labs(fill = fillVar)+
+       xlab(xAxis)
+   )              
+                        }
     
     #updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
    # print(input$xAxisChoice)
