@@ -1,7 +1,9 @@
 # qPCR_app
 Shiny App for analysis and visualization of qPCR results from the output files of the ImageQuant3 qPCR machine.
 
-The Premium Plot feature allows you to plot the gene expression of your samples together with the experimental conditions of your experiment. To do so, you need to upload an Experimental Design Table in tidy format (one column = one variable). 
+Available online here: https://petunias.shinyapps.io/qpcr_app/
+
+The **Premium Plot** feature allows you to plot the gene expression of your samples together with the experimental conditions of your experiment. To do so, you need to upload an Experimental Design Table in tidy format (one column = one variable). 
 
 IMPORTANT: There must be a column named "Sample" and it should be writen with a capitalized "S" and the name of your samples should be the same as in the qPCR machine output files. Here there is an example of how this table should look like: 
 
@@ -25,3 +27,6 @@ IMPORTANT: There must be a column named "Sample" and it should be writen with a 
 | c41    | amsterdam | 20uM   | ROOTS  |   |
 | c42    | amsterdam | 20uM   | ROOTS  |   |
 | c44    | amsterdam | 20uM   | ROOTS  |   |
+
+
+
