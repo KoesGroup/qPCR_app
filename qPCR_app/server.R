@@ -452,7 +452,7 @@ server <- function(input, output, session) {
    output$advPlot <- renderPlot(
       ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
        geom_col(position = position_dodge())+ #needs fill to properly dodge
-        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())+
+        geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge(.9), width = .2)+
         labs(fill = fillVar)+
         xlab(xAxis)
         
@@ -473,7 +473,7 @@ server <- function(input, output, session) {
    output$advPlot <- renderPlot(
      ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
        geom_col(position = position_dodge())+ #needs fill to properly dodge
-       geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge())+
+       geom_errorbar(aes(ymin=ddCtmean-ddCtSD, ymax=ddCtmean+ddCtSD), position = position_dodge(.9), width = .2)+
        facet_grid(.~get(facetVar))+
        labs(fill = fillVar)+
        xlab(xAxis)
