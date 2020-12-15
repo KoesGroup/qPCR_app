@@ -2,6 +2,7 @@ library(shiny)
 library(shinyFiles)
 library(DT)
 library(shinyjs)
+library(DT)
 
 ui <- fluidPage(
   titlePanel("QPCR Analysis"),
@@ -174,9 +175,9 @@ ui <- fluidPage(
         ),
         mainPanel(
           tableOutput("expDesignTable"),
-          tableOutput("plotTable2"),
           uiOutput("targetGenes"),
-          plotOutput("advPlot", height = 800)
+          plotOutput("advPlot", height = 800),
+          dataTableOutput("plotTable2")
 
         )
       )

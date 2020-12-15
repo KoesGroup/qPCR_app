@@ -5,6 +5,7 @@ library(data.table)
 library(RColorBrewer)
 library(xlsx)
 library(readxl)
+library(DT)
 
 source("FetchData.R")
 source("infoFile.R")
@@ -446,7 +447,7 @@ server <- function(input, output, session) {
       mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
       ungroup()
   
-    #output$plotTable2  <- renderTable(dfM) 
+    output$plotTable2  <- DT::renderDataTable({dfM}) 
 
   
    output$advPlot <- renderPlot(
