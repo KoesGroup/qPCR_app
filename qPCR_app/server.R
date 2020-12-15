@@ -471,6 +471,8 @@ server <- function(input, output, session) {
      mutate(ddCtmean = mean(ddCt), ddCtSD = sd(ddCt)) %>% 
      ungroup()
    
+   output$plotTable2  <- DT::renderDataTable({dfM})
+   
    output$advPlot <- renderPlot(
      ggplot(dfM, aes(x = get(xAxis), y = ddCtmean, fill = get(fillVar)))+
        geom_col(position = position_dodge())+ #needs fill to properly dodge
@@ -478,7 +480,9 @@ server <- function(input, output, session) {
        facet_grid(.~get(facetVar))+
        labs(fill = fillVar)+
        xlab(xAxis)
-   )              
+   )
+   
+  
                         }
     
     #updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
