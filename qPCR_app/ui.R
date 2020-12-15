@@ -160,6 +160,8 @@ ui <- fluidPage(
                             
                             actionButton("plotButton4", "Plot", 
                                          style="color: #fff; background-color: #CC0000; border-color: #CC0000; height:60px; width:130px"),
+                            actionButton("download_prem_df", "Download Data Table",
+                                         style="color: #fff; background-color: #CC0000; border-color: #CC0000;  height:30px; width:199px"),
                             
                             #uiOutput("plotTarget")
                             checkboxGroupInput("targetChoice", "select target:", choices = NULL),

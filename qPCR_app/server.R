@@ -13,7 +13,7 @@ source("infoFile.R")
 server <- function(input, output, session) {
   output$intro1 <- renderText("info box. Upon clicking on an info button, information will be displayed here.")
   rv <- reactiveValues(df = NULL, rawDf = NULL, targets = NULL, genes = NULL, refs = NULL, normDf = NULL,
-                       samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL, sam2 = NULL, expDesignDF = NULL)  
+                       samps = NULL, sam=NULL, sampleText = NULL, data2plot=NULL, sam2 = NULL, expDesignDF = NULL, dfM = NULL)  
   
   
   # set default colors for the wellpanels.
@@ -458,6 +458,8 @@ server <- function(input, output, session) {
         xlab(xAxis)
         
    )
+   rv$dfM <- dfM
+   
  }else{
    
    facetVar <- input$facetChoice
@@ -481,6 +483,7 @@ server <- function(input, output, session) {
        labs(fill = fillVar)+
        xlab(xAxis)
    )
+   rv$dfM <- dfM
    
   
                         }
@@ -488,6 +491,12 @@ server <- function(input, output, session) {
     #updateRadioButtons(session, "fillChoice", label = "Select fill:", choices = fillList, selected = fillList[1])
    # print(input$xAxisChoice)
     
+  })
+  
+  eventDownloadPremData <- observeEvent(input$download_prem_df,{
+    df <- rv$dfM
+    write.xlsx(df, "qPCR_premiumPlot_data.xlsx", sheetName = "Sheet1", 
+               col.names = TRUE, row.names = TRUE, append = FALSE)
   })
   
 }
